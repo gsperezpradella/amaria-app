@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cotización — Amaría</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --rose:#C8625A; --rose-dark:#A8453D; --rose-light:#FDF0EF;
+  --gold:#B8924A; --gold-dark:#E65100; --gold-light:#FDF6EC;
+  --sage:#6B8F6E; --sage-dark:#2E7D32; --sage-light:#EFF5F0;
+  --plum:#7A5A8A; --plum-light:#F5F0FA;
+  --bg:#FAF8F5; --surface:#FFFFFF; --surface2:#F5F2EE;
+  --border:#EDE8E0; --border2:#DDD6CA;
+  --text:#2A2520; --text2:#5A5248; --text3:#9A928A;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 2px 12px rgba(42,37,32,0.08);
+  --shadow-lg:0 8px 32px rgba(42,37,32,0.12);
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-body:'Plus Jakarta Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-size:14px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cpath d='M0 80 Q30 55 55 35 Q75 18 95 22' stroke='%23C8625A' stroke-width='0.9' fill='none' opacity='0.12'/%3E%3Cellipse cx='38' cy='52' rx='7' ry='2.8' transform='rotate(-40 38 52)' fill='%23C8625A' opacity='0.1'/%3E%3Ccircle cx='92' cy='19' r='2.5' fill='%23C8625A' opacity='0.1'/%3E%3Cpath d='M420 340 Q390 315 365 295 Q342 278 320 282' stroke='%23C8625A' stroke-width='0.9' fill='none' opacity='0.12'/%3E%3Cellipse cx='382' cy='312' rx='7' ry='2.8' transform='rotate(140 382 312)' fill='%23C8625A' opacity='0.1'/%3E%3Ccircle cx='324' cy='280' r='2.5' fill='%23C8625A' opacity='0.1'/%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:420px 420px;min-height:100vh;padding:24px 16px 80px;}
+
+.page-wrap{max-width:980px;margin:0 auto;}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.topbar-title{font-family:var(--font-display);font-size:26px;font-style:italic;color:var(--text);flex:1;}
+.topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:all 0.15s;border:none;}
+.btn-primary{background:var(--rose);color:white;}.btn-primary:hover{background:var(--rose-dark);}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border2);}.btn-ghost:hover{border-color:var(--rose);color:var(--rose);}
+.btn-gold{background:var(--gold);color:white;}.btn-gold:hover{background:var(--gold-dark);}
+.btn-sage{background:var(--sage);color:white;}.btn-sage:hover{background:var(--sage-dark);}
+.btn-sage{background:var(--sage);color:white;}.btn-sage:hover{background:var(--sage-dark);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+
+/* Header card */
+.cot-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px 24px;margin-bottom:16px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.cot-header-bg{position:absolute;top:0;right:0;width:180px;opacity:0.07;pointer-events:none;}
+.cot-brand{font-family:var(--font-display);font-size:30px;font-style:italic;font-weight:600;color:var(--rose-dark);margin-bottom:2px;}
+.cot-brand-sub{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:22px;}
+.cot-meta-grid{display:grid;grid-template-columns:1fr 1fr 1fr 120px;gap:14px;}
+@media(max-width:700px){.cot-meta-grid{grid-template-columns:1fr 1fr;}}
+
+/* Fields */
+.field-group{display:flex;flex-direction:column;gap:5px;}
+.field-group label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);}
+.field-input{padding:8px 12px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:13.5px;font-family:var(--font-body);color:var(--text);background:var(--surface);outline:none;transition:border-color 0.15s;width:100%;}
+.field-input:focus{border-color:var(--rose);}
+textarea.field-input{resize:vertical;min-height:70px;line-height:1.5;}
+.status-select{border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;}
+.status-borrador{background:var(--gold-light);color:#E65100;border-color:var(--gold)!important;}
+.status-calculando{background:var(--plum-light);color:var(--plum);border-color:var(--plum)!important;}
+.status-lista{background:var(--sage-light);color:#2E7D32;border-color:#2E7D32!important;}
+
+/* Section card */
+.section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;box-shadow:var(--shadow);overflow:hidden;}
+.section-title-bar{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-bottom:1px solid var(--border);background:var(--surface2);cursor:pointer;user-select:none;gap:10px;}
+.section-title{font-family:var(--font-display);font-size:17px;font-style:italic;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
+.section-toggle{color:var(--text3);font-size:11px;transition:transform 0.2s;flex-shrink:0;}
+.section-toggle.open{transform:rotate(180deg);}
+
+/* Groups (drag-sortable) */
+.grupos-container{min-height:10px;}
+.grupo-wrap{border-bottom:1px solid var(--border);background:var(--surface);transition:box-shadow 0.15s;}
+.grupo-wrap.dragging{opacity:0.5;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.grupo-wrap.drag-over{border-top:2px solid var(--rose);}
+.grupo-header{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--rose-light);border-bottom:1px solid var(--border);}
+.grupo-drag-handle{color:var(--rose);cursor:grab;font-size:14px;flex-shrink:0;padding:2px 4px;touch-action:none;}
+.grupo-drag-handle:active{cursor:grabbing;}
+.grupo-nombre-input{flex:1;border:none;background:transparent;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--rose-dark);outline:none;}
+.grupo-nombre-input::placeholder{color:var(--rose);opacity:0.5;}
+
+/* Table */
+.cot-table{width:100%;border-collapse:collapse;}
+.cot-table thead tr{background:var(--surface2);}
+.cot-table th{padding:7px 8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.cot-table th.num{text-align:right;}
+.cot-table th.ctr{text-align:center;}
+.cot-table td{padding:7px 8px;border-bottom:1px solid #F5F2EE;font-size:13px;vertical-align:middle;}
+.cot-table td input,.cot-table td select{width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;color:var(--text);transition:border-color 0.15s,background 0.15s;}
+.cot-table td input:focus,.cot-table td select:focus{border-color:var(--rose);background:var(--rose-light);}
+.cot-table td input[type="number"]{text-align:right;}
+.td-calc{text-align:right;font-weight:600;font-size:12.5px;color:#2E7D32;}
+.td-costo{text-align:right;font-size:12px;color:var(--text3);}
+.td-total{text-align:right;font-weight:700;font-size:13px;color:#2E7D32;}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;padding:2px 4px;opacity:0;transition:opacity 0.15s;}
+.cot-table tr:hover .del-btn{opacity:1;}
+.add-row td{padding:8px 10px;}
+.add-item-btn{background:none;border:1px dashed var(--border2);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:var(--font-body);transition:all 0.15s;}
+.add-item-btn:hover{border-color:var(--rose);color:var(--rose);background:var(--rose-light);}
+
+/* Totals row */
+.totals-footer{display:grid;gap:0;border-top:2px solid var(--border);}
+.totals-row{display:flex;justify-content:flex-end;gap:0;background:var(--surface2);}
+.total-cell{padding:8px 12px;text-align:right;min-width:80px;border-left:1px solid var(--border);}
+.total-cell-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);}
+.total-cell-value{font-size:13px;font-weight:700;margin-top:1px;}
+.total-cell-value.neg{color:var(--rose);}
+.total-cell-value.pos{color:#2E7D32;}
+
+/* Fuel bar */
+.fuel-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--gold-light);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.fuel-bar label{font-size:11px;font-weight:600;color:#E65100;white-space:nowrap;}
+.fuel-input{padding:6px 10px;border:1.5px solid var(--gold);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font-body);color:var(--text);background:white;outline:none;width:110px;}
+.fuel-badge{font-size:10px;color:var(--text3);font-style:italic;}
+
+/* Autocomplete dropdown */
+.autocomplete-wrap{position:relative;}
+.autocomplete-dropdown{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border2);border-top:none;border-radius:0 0 8px 8px;z-index:100;max-height:180px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.1);display:none;}
+.autocomplete-item{padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid #F5F2EE;display:flex;align-items:center;gap:8px;}
+.autocomplete-item:hover{background:var(--rose-light);color:var(--rose-dark);}
+.autocomplete-item .item-sub{font-size:11px;color:var(--text3);}
+
+/* Add grupo */
+.add-grupo-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;background:none;border:none;color:var(--rose);font-size:13px;font-weight:600;font-family:var(--font-body);cursor:pointer;border-top:1px dashed var(--border2);width:100%;transition:background 0.15s;}
+.add-grupo-btn:hover{background:var(--rose-light);}
+
+/* Resumen */
+.resumen-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;box-shadow:var(--shadow-lg);margin-bottom:20px;}
+.resumen-title{font-family:var(--font-display);font-size:20px;font-style:italic;font-weight:600;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.resumen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+@media(max-width:600px){.resumen-grid{grid-template-columns:1fr 1fr;}}
+.resumen-box{background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px;border:1px solid var(--border);}
+.resumen-box-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:6px;}
+.resumen-box-value{font-family:var(--font-display);font-size:24px;font-weight:600;}
+.resumen-box-value.neg{color:var(--rose-dark);}
+.resumen-box-value.pos{color:#2E7D32;}
+.resumen-box-value.main{color:var(--text);}
+.margen-bar-wrap{margin-bottom:20px;}
+.margen-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px;}
+.margen-bar-track{height:9px;background:var(--border);border-radius:5px;overflow:hidden;}
+.margen-bar-fill{height:100%;border-radius:5px;transition:width 0.4s ease;background:linear-gradient(90deg,var(--rose),var(--gold),var(--sage));}
+.desglose-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #F5F2EE;font-size:13px;}
+.desglose-row:last-child{border-bottom:none;}
+.desglose-label{color:var(--text2);display:flex;align-items:center;gap:8px;}
+.desglose-nums{display:flex;gap:20px;text-align:right;}
+.desglose-costo{font-size:12px;color:var(--text3);min-width:90px;}
+.desglose-venta{font-weight:600;font-size:13px;color:#2E7D32;min-width:90px;}
+.desglose-margen{font-size:12px;color:#E65100;min-width:40px;}
+
+/* Notas */
+.notas-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);margin-bottom:16px;}
+
+/* ═══ PRINT (internal only) ═══ */
+@media print {
+  body{background:white!important;background-image:none!important;padding:0!important;}
+  .topbar,.add-grupo-btn,.add-item-btn,.del-btn,.btn,.fuel-bar button,.no-print,.autocomplete-dropdown{display:none!important;}
+  .section-card,.cot-header,.resumen-card,.notas-card{box-shadow:none!important;break-inside:avoid;}
+  .grupo-drag-handle{display:none!important;}
+  .cot-table td input,.cot-table td select{border:none!important;background:transparent!important;}
+  .field-input{border:none!important;background:transparent!important;}
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-title">📋 Cotización interna</div>
+    <div class="topbar-actions">
+      <span id="save-status" style="font-size:12px;color:var(--sage-dark);opacity:0;transition:opacity 0.5s;font-weight:600"></span>
+      <button class="btn btn-sage btn-sm" onclick="guardarCotizacion()">💾 Guardar</button>
+      <button class="btn btn-ghost btn-sm" onclick="duplicarCotizacion()">⧉ Duplicar</button>
+      <button class="btn btn-gold btn-sm" onclick="convertirAEvento()">🎉 Convertir a evento</button>
+      <button class="btn btn-primary btn-sm" onclick="exportarPDF()">📄 Exportar</button>
+    </div>
+  </div>
+
+  <!-- Header meta -->
+  <div class="cot-header">
+    <svg class="cot-header-bg" viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M180 0 Q140 40 120 80 Q100 120 110 160" stroke="#C8625A" stroke-width="1.5" fill="none"/>
+      <ellipse cx="132" cy="72" rx="8" ry="3" fill="#C8625A" transform="rotate(-60 132 72)"/>
+      <ellipse cx="118" cy="108" rx="7" ry="2.8" fill="#C8625A" transform="rotate(-45 118 108)"/>
+      <circle cx="125" cy="88" r="3" fill="#C8625A"/>
+      <circle cx="160" cy="20" r="1.5" fill="#C8625A"/>
+    </svg>
+    <div class="cot-brand">Amaría</div>
+    <div class="cot-brand-sub">Event Planner · Cotización interna</div>
+    <div class="cot-meta-grid">
+      <div class="field-group">
+        <label>Cliente / Lead</label>
+        <div class="autocomplete-wrap">
+          <input class="field-input" id="cot-cliente" placeholder="Buscar cliente..." oninput="filtrarClientes(this.value)" autocomplete="off"/>
+          <div class="autocomplete-dropdown" id="dropdown-clientes"></div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Lugar del evento</label>
+        <input class="field-input" id="cot-lugar" placeholder="Ciudad, finca, salón..."/>
+      </div>
+      <div class="field-group">
+        <label>Fecha</label>
+        <input class="field-input" id="cot-fecha" type="date"/>
+      </div>
+      <div class="field-group">
+        <label>Estado</label>
+        <select class="field-input status-select status-borrador" id="cot-estado" onchange="actualizarEstado(this)">
+          <option value="borrador">Borrador</option>
+          <option value="calculando">Calculando</option>
+          <option value="lista">Lista ✓</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ARTÍCULOS DE UN SOLO USO ═══ -->
+  <div class="section-card">
+    <div class="section-title-bar" onclick="toggleSection('articulos')">
+      <div class="section-title">🛍 Artículos de un solo uso</div>
+      <span class="section-toggle open" id="toggle-articulos">▼</span>
+    </div>
+    <div id="body-articulos">
+      <div class="grupos-container" id="grupos-container"></div>
+      <button class="add-grupo-btn no-print" onclick="agregarGrupo()">＋ Agregar grupo de artículos</button>
+    </div>
+    <div id="totales-articulos" style="display:none">
+      <div class="totals-footer">
+        <div class="totals-row" id="totals-art-row"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ARTÍCULOS DE INVENTARIO ═══ -->
+  <div class="section-card">
+    <div class="section-title-bar" onclick="toggleSection('inventario')">
+      <div class="section-title">📦 Del inventario</div>
+      <span class="section-toggle open" id="toggle-inventario">▼</span>
+    </div>
+    <div id="body-inventario">
+      <table class="cot-table">
+        <thead><tr>
+          <th style="width:30%">Artículo</th>
+          <th class="num" style="width:7%">Cant.</th>
+          <th class="num col-costo" style="width:13%">Costo ref.</th>
+          <th class="num" style="width:15%">Precio cliente</th>
+          <th class="num" style="width:13%">Ganancia</th>
+          <th style="width:18%">Notas</th>
+          <th style="width:4%"></th>
+        </tr></thead>
+        <tbody id="inv-items"></tbody>
+        <tbody class="no-print"><tr class="add-row"><td colspan="7"><button class="add-item-btn" onclick="agregarInventario()">＋ Agregar del inventario</button></td></tr></tbody>
+      </table>
+    </div>
+    <div id="totales-inventario" style="display:none">
+      <div class="totals-footer"><div class="totals-row" id="totals-inv-row"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══ SERVICIOS ═══ -->
+  <div class="section-card">
+    <div class="section-title-bar" onclick="toggleSection('servicios')">
+      <div class="section-title">🤝 Servicios</div>
+      <span class="section-toggle open" id="toggle-servicios">▼</span>
+    </div>
+    <div id="body-servicios">
+      <table class="cot-table">
+        <thead><tr>
+          <th style="width:25%">Servicio</th>
+          <th class="col-proveedor" style="width:18%">Proveedor</th>
+          <th class="num col-costo" style="width:12%">Costo</th>
+          <th class="num col-margen" style="width:8%">Margen%</th>
+          <th class="num" style="width:14%">Precio venta</th>
+          <th class="num" style="width:11%">Ganancia</th>
+          <th style="width:4%"></th>
+        </tr></thead>
+        <tbody id="svc-items"></tbody>
+        <tbody class="no-print"><tr class="add-row"><td colspan="7"><button class="add-item-btn" onclick="agregarServicio()">＋ Agregar servicio</button></td></tr></tbody>
+      </table>
+    </div>
+    <div id="totales-servicios" style="display:none">
+      <div class="totals-footer"><div class="totals-row" id="totals-svc-row"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══ DESPLAZAMIENTOS ═══ -->
+  <div class="section-card">
+    <div class="section-title-bar" onclick="toggleSection('trans')">
+      <div class="section-title">🚗 Desplazamientos</div>
+      <span class="section-toggle open" id="toggle-trans">▼</span>
+    </div>
+    <div id="body-trans">
+      <div class="fuel-bar no-print">
+        <label>⛽ Precio combustible (COP/litro):</label>
+        <input class="fuel-input" id="fuel-precio" type="number" value="16500" oninput="renderTransItems()"/>
+        <label>Rendimiento:</label>
+        <input class="fuel-input" id="fuel-rend" type="number" value="12" oninput="renderTransItems()" style="width:75px"/>
+        <span style="font-size:12px;color:var(--text2)">km/litro</span>
+        <button class="btn btn-ghost btn-sm" onclick="buscarPrecioCombustible()">🔄 Actualizar precio</button>
+        <span class="fuel-badge" id="fuel-badge"></span>
+      </div>
+      <table class="cot-table">
+        <thead><tr>
+          <th style="width:19%">Desde</th>
+          <th style="width:19%">Hasta</th>
+          <th class="num" style="width:7%">Km</th>
+          <th class="ctr" style="width:6%">I&V</th>
+          <th class="num" style="width:7%">Km total</th>
+          <th class="num col-costo" style="width:10%">Costo comb.</th>
+          <th class="num col-margen" style="width:7%">Margen%</th>
+          <th class="num" style="width:11%">Precio venta</th>
+          <th style="width:10%">Notas</th>
+          <th style="width:4%"></th>
+        </tr></thead>
+        <tbody id="trans-items"></tbody>
+        <tbody class="no-print"><tr class="add-row"><td colspan="10"><button class="add-item-btn" onclick="agregarViaje()">＋ Agregar desplazamiento</button></td></tr></tbody>
+      </table>
+    </div>
+    <div id="totales-trans" style="display:none">
+      <div class="totals-footer"><div class="totals-row" id="totals-trans-row"></div></div>
+    </div>
+  </div>
+
+  <!-- Notas -->
+  <div class="notas-card">
+    <div style="font-family:var(--font-display);font-size:16px;font-style:italic;font-weight:600;margin-bottom:10px">📝 Notas internas</div>
+    <textarea class="field-input" id="cot-notas" placeholder="Observaciones, condiciones especiales, detalles a recordar..."></textarea>
+  </div>
+
+  <!-- Resumen -->
+  <div class="resumen-card">
+    <div class="resumen-title">📊 Resumen de la cotización</div>
+    <div class="resumen-grid">
+      <div class="resumen-box resumen-costo-row">
+        <div class="resumen-box-label">Costo total</div>
+        <div class="resumen-box-value neg" id="res-costo">$0</div>
+      </div>
+      <div class="resumen-box">
+        <div class="resumen-box-label">Precio de venta</div>
+        <div class="resumen-box-value main" id="res-venta">$0</div>
+      </div>
+      <div class="resumen-box">
+        <div class="resumen-box-label">Ganancia estimada</div>
+        <div class="resumen-box-value pos" id="res-ganancia">$0</div>
+      </div>
+    </div>
+    <div class="margen-bar-wrap">
+      <div class="margen-bar-label"><span>Margen de ganancia</span><span id="res-margen-pct">0%</span></div>
+      <div class="margen-bar-track"><div class="margen-bar-fill" id="margen-bar" style="width:0%"></div></div>
+    </div>
+    <div id="res-desglose"></div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<!-- ═══════════════ PDF TEMPLATE (hidden, shown during print) ═══════════════ -->
+<div id="pdf-template" style="display:none"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js">
+// Expose to window
+Object.assign(window, {
+  loadAppData,
+  guardarCotizacion,
+  calcTotalVenta,
+  buildResumenLabel,
+  showSaveStatus,
+  loadCotizacion,
+  actualizarTitulo,
+  actualizarEstado,
+  toggleSection,
+  filtrarClientes,
+  elegirCliente,
+  agregarGrupo,
+  eliminarGrupo,
+  renderGrupos,
+  buildGrupoHTML,
+  onGrupoDragStart,
+  onGrupoDragOver,
+  onGrupoDrop,
+  onGrupoDragEnd,
+  buildItemRow,
+  filtrarArticulosRow,
+  toggleArticulosRow,
+  elegirArticuloRow,
+  agregarItemGrupo,
+  updateItem,
+  updateItemCalc,
+  eliminarItem,
+  recalcGrupo,
+  agregarInventario,
+  renderInvItems,
+  selectInvItem,
+  updateInvCalc,
+  updateInvField,
+  eliminarInv,
+  renderTotalesInv,
+  agregarServicio,
+  renderSvcItems,
+  updateSvcField,
+  updateSvcCalc,
+  eliminarSvc,
+  renderTotalesSvc,
+  agregarViaje,
+  renderTransItems,
+  sugerirLugar,
+  elegirLugar,
+  updateTransField,
+  updateTransIV,
+  updateTransCalc,
+  recalcTransRow,
+  eliminarTrans,
+  renderTotalesTrans,
+  calcKmAuto,
+  buscarPrecioCombustible,
+  autoSave,
+  recalcTodo,
+  exportarPDF,
+  cerrarExportModal,
+  generarPDFInterno,
+  buildPDFInternoHTML,
+  generarPDFCliente,
+  buildPDFClienteHTML,
+});
+</script>
+  <script>
+// Firebase compat init
+const firebaseConfig = {
+  apiKey: "AIzaSyA5Dgfx7LBK_XUanAwEnnLYOi27WXK3bEM",
+  authDomain: "amorcito-37053.firebaseapp.com",
+  projectId: "amorcito-37053",
+  storageBucket: "amorcito-37053.firebasestorage.app",
+  messagingSenderId: "155632710492",
+  appId: "1:155632710492:web:01d7c771a812e52f614799"
+};
+if (!firebase.apps || !firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+// Compat wrappers
+const getDocs    = r => r.get();
+const getDoc     = r => r.get();
+const setDoc     = (r,v) => r.set(v);
+const deleteDoc  = r => r.delete();
+const onSnapshot = (r,cb) => r.onSnapshot(cb);
+
+
+
+
+// ── Load clients/providers/inventory from Firebase ──
+async function loadAppData() {
+  try {
+    const [cliSnap, provSnap, invSnap, leadSnap, catSnap] = await Promise.all([
+      getDocs(db.collection( 'clientes')),
+      getDocs(db.collection( 'proveedores')),
+      getDocs(db.collection( 'inventario')),
+      getDocs(db.collection( 'leads')),
+      getDocs(db.collection( 'catalogo_articulos')),
+    ]);
+    clientesDisponibles = [
+      ...cliSnap.docs.map(d=>d.data().nombre),
+      ...leadSnap.docs.map(d=>d.data().nombre),
+    ].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i);
+    proveedoresDisponibles = provSnap.docs.map(d=>d.data().nombre).filter(Boolean);
+    inventarioDisponible = invSnap.docs.map(d=>({id:d.id, nombre:d.data().nombre, costo:d.data().costo||0}));
+    catalogoArticulos = [...new Set([
+      ...catalogoArticulos,
+      ...catSnap.docs.map(d=>d.data().nombre).filter(Boolean)
+    ])];
+  } catch(e) { console.error('Error loading app data:', e); }
+}
+
+// ── Save cotizacion to Firebase ──
+async function guardarCotizacion() {
+  const id = cotizacionId || (cotizacionId = uid());
+  const payload = {
+    id,
+    titulo: document.getElementById('cot-titulo') ? document.getElementById('cot-titulo').value : '',
+    cliente: document.getElementById('cot-cliente').value || '',
+    lugar:   document.getElementById('cot-lugar').value || '',
+    fecha:   document.getElementById('cot-fecha').value || '',
+    estado:  document.getElementById('cot-estado').value || 'borrador',
+    notas:   document.getElementById('cot-notas').value || '',
+    grupos:  grupos.map(g=>({id:g.id, nombre:g.nombre, items:g.items})),
+    invItems, svcItems, transItems,
+    totalVenta: calcTotalVenta(),
+    seccionesResumen: buildResumenLabel(),
+    savedAt: new Date().toISOString(),
+  };
+  try {
+    await db.collection('cotizaciones').doc(id).set(payload);
+    if(window.history && window.history.replaceState) {
+      window.history.replaceState({}, '', window.location.pathname + '?id=' + id);
+    }
+    showSaveStatus('✓ Guardado');
+  } catch(e) {
+    console.error('Error saving:', e);
+    showSaveStatus('✗ Error al guardar');
+  }
+}
+
+function calcTotalVenta() {
+  const artV = grupos.reduce((s,g)=>s+g.items.reduce((ss,a)=>ss+Math.round((a.costoU||0)*(1+(a.margen||0)/100))*(a.cant||1),0),0);
+  const invG = invItems.reduce((s,i)=>(i.precioCliente||0)*(i.cant||1)+s,0);
+  const svcV = svcItems.reduce((s,sv)=>s+Math.round((sv.costo||0)*(1+(sv.margen||0)/100)),0);
+  const trV  = transItems.reduce((s,t)=>s+(t._precio||0),0);
+  return artV + invG + svcV + trV;
+}
+
+function buildResumenLabel() {
+  const parts = [];
+  const artN = grupos.reduce((s,g)=>s+g.items.filter(a=>a.nombre).length,0);
+  if(artN) parts.push(artN + ' artículo' + (artN!==1?'s':''));
+  if(svcItems.filter(s=>s.nombre).length) parts.push(svcItems.filter(s=>s.nombre).length + ' servicio' + (svcItems.filter(s=>s.nombre).length!==1?'s':''));
+  if(transItems.filter(t=>t.desde).length) parts.push(transItems.filter(t=>t.desde).length + ' desplazamiento' + (transItems.filter(t=>t.desde).length!==1?'s':''));
+  return parts.join(' · ');
+}
+
+function showSaveStatus(msg) {
+  const el = document.getElementById('save-status');
+  if(el) { el.textContent = msg; el.style.opacity='1'; setTimeout(()=>el.style.opacity='0', 2500); }
+}
+
+// ── Load cotizacion from Firebase by ID ──
+async function loadCotizacion(id) {
+  try {
+    const snap = await db.collection('cotizaciones').doc(id).get();
+    if(!snap.exists) return;
+    const d = snap.data();
+    cotizacionId = id;
+    if(document.getElementById('cot-cliente')) document.getElementById('cot-cliente').value = d.cliente||'';
+    if(document.getElementById('cot-lugar'))   document.getElementById('cot-lugar').value   = d.lugar||'';
+    if(document.getElementById('cot-fecha'))   document.getElementById('cot-fecha').value   = d.fecha||'';
+    const sel = document.getElementById('cot-estado');
+    if(sel) { sel.value = d.estado||'borrador'; actualizarEstado(sel); }
+    if(document.getElementById('cot-notas')) document.getElementById('cot-notas').value = d.notas||'';
+    // Restore data
+    grupos = (d.grupos||[]).map(g=>({id:g.id||uid(), nombre:g.nombre||'', items:g.items||[]}));
+    invItems = d.invItems||[];
+    svcItems = d.svcItems||[];
+    transItems = (d.transItems||[]).map(t=>({...t, _costo:t._costo||0, _precio:t._precio||0}));
+    // Update title
+    const titulo = d.cliente ? 'Para ' + d.cliente : 'Cotización';
+    document.querySelector('.topbar-title').textContent = '📋 ' + titulo;
+    renderGrupos();
+    renderInvItems();
+    renderSvcItems();
+    renderTransItems();
+    recalcTodo();
+  } catch(e) { console.error('Error loading cotizacion:', e); }
+}
+
+
+// ─── Data ───
+let cotizacionId = null;
+let grupos = [];
+let invItems = [];
+let svcItems = [];
+let transItems = [];
+
+// Inventario disponible — en integración se leerá de Firebase
+let inventarioDisponible = [
+  { id:'inv1', nombre:'Arco de flores grandes', costo:3200000 },
+  { id:'inv2', nombre:'Candelabros dorados ×6', costo:850000 },
+  { id:'inv3', nombre:'Camino de luz LED', costo:1200000 },
+  { id:'inv4', nombre:'Mesa de madera rústica', costo:950000 },
+  { id:'inv5', nombre:'Sillas Tiffany ×50', costo:2500000 },
+];
+let clientesDisponibles = [];
+let proveedoresDisponibles = [];
+let catalogoArticulos = [
+  'Tul blanco','Tela organza','Flores artificiales','Velas decorativas',
+  'Cintas de raso','Globos','Papel kraft','Luces guirnalda','Flores naturales',
+  'Porta velas','Servilletas','Manteles','Flores de tela',
+];
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+const fmt = n => '$' + Number(n||0).toLocaleString('es-CO');
+const parseN = v => Number(String(v).replace(/[^0-9.-]/g,''))||0;
+
+// ─── Init ───
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('cot-fecha').value = new Date().toISOString().split('T')[0];
+  await loadAppData();
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if(id) {
+    await loadCotizacion(id);
+  } else {
+    agregarGrupo('Decoración general');
+    recalcTodo();
+  }
+});
+
+// ─── Header ───
+function actualizarTitulo(v) {
+  document.getElementById('page-title').textContent = v ? '📋 ' + v : '📋 Nueva cotización';
+}
+function actualizarEstado(sel) {
+  sel.className = 'field-input status-select status-' + sel.value;
+}
+
+// ─── Section toggle ───
+function toggleSection(id) {
+  const body = document.getElementById('body-'+id);
+  const tog = document.getElementById('toggle-'+id);
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  tog.classList.toggle('open', !open);
+}
+
+// ─── Cliente autocomplete ───
+function filtrarClientes(v) {
+  const dd = document.getElementById('dropdown-clientes');
+  if(!v || v.length < 1) { dd.style.display='none'; return; }
+  const matches = clientesDisponibles.filter(c => c.toLowerCase().includes(v.toLowerCase())).slice(0,8);
+  if(!matches.length) { dd.style.display='none'; return; }
+  dd.style.display = 'block';
+  dd.innerHTML = matches.map(c =>
+    `<div class="autocomplete-item" onclick="elegirCliente('${c.replace(/'/g,"\\'")}')"><span>👤</span> ${c}</div>`
+  ).join('');
+}
+function elegirCliente(v) {
+  document.getElementById('cot-cliente').value = v;
+  document.getElementById('dropdown-clientes').style.display = 'none';
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.autocomplete-wrap') && !e.target.closest('.autocomplete-dropdown')) {
+    document.querySelectorAll('.autocomplete-dropdown').forEach(d => d.style.display='none');
+  }
+});
+
+// ═══════════════════════════════════════════════
+//  GRUPOS — drag to sort
+// ═══════════════════════════════════════════════
+let dragSrcGrupoId = null;
+
+function agregarGrupo(nombre='') {
+  const g = { id:uid(), nombre, items:[] };
+  grupos.push(g);
+  renderGrupos();
+  if(!nombre) agregarItemGrupo(g.id);
+}
+
+function eliminarGrupo(gid) {
+  if(!confirm('¿Eliminar este grupo?')) return;
+  grupos = grupos.filter(g=>g.id!==gid);
+  renderGrupos(); recalcTodo();
+}
+
+function renderGrupos() {
+  const container = document.getElementById('grupos-container');
+  container.innerHTML = grupos.map(g => buildGrupoHTML(g)).join('');
+  // Attach drag events
+  container.querySelectorAll('.grupo-wrap').forEach(el => {
+    el.addEventListener('dragstart', onGrupoDragStart);
+    el.addEventListener('dragover', onGrupoDragOver);
+    el.addEventListener('drop', onGrupoDrop);
+    el.addEventListener('dragend', onGrupoDragEnd);
+  });
+}
+
+function buildGrupoHTML(g) {
+  const costo = g.items.reduce((s,a)=>s+(a.costoU||0)*(a.cant||1),0);
+  const venta = g.items.reduce((s,a)=>s+Math.round((a.costoU||0)*(1+(a.margen||0)/100))*(a.cant||1),0);
+  return `<div class="grupo-wrap" id="grupo-${g.id}" draggable="true" data-gid="${g.id}">
+    <div class="grupo-header">
+      <span class="grupo-drag-handle no-print" title="Arrastrar para reordenar">⠿</span>
+      <input class="grupo-nombre-input" value="${g.nombre}" placeholder="Nombre del grupo (ej: Mesa principal, Arcos...)"
+        oninput="grupos.find(x=>x.id==='${g.id}').nombre=this.value"/>
+      <button onclick="eliminarGrupo('${g.id}')" class="no-print" style="background:none;border:none;cursor:pointer;color:var(--rose-dark);font-size:12px;padding:2px 8px;font-family:var(--font-body);font-weight:600">✕ grupo</button>
+    </div>
+    <table class="cot-table">
+      <thead><tr>
+        <th style="width:24%">Artículo</th>
+        <th class="num" style="width:6%">Cant.</th>
+        <th style="width:7%">Unidad</th>
+        <th class="num col-costo" style="width:11%">Costo unit.</th>
+        <th class="num col-margen" style="width:7%">Margen%</th>
+        <th class="num" style="width:11%">Precio unit.</th>
+        <th class="num" style="width:11%">Total venta</th>
+        <th class="col-proveedor" style="width:19%">Proveedor</th>
+        <th style="width:4%"></th>
+      </tr></thead>
+      <tbody id="items-${g.id}">${g.items.map(item=>buildItemRow(g.id,item)).join('')}</tbody>
+      <tbody class="no-print"><tr class="add-row"><td colspan="9"><button class="add-item-btn" onclick="agregarItemGrupo('${g.id}')">＋ Agregar artículo</button></td></tr></tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;gap:0;background:var(--rose-light);border-top:1px solid var(--border);">
+      <div class="total-cell col-costo"><div class="total-cell-label">Costo grupo</div><div class="total-cell-value neg">${fmt(costo)}</div></div>
+      <div class="total-cell"><div class="total-cell-label">Precio venta grupo</div><div class="total-cell-value pos">${fmt(venta)}</div></div>
+    </div>
+  </div>`;
+}
+
+// Drag events for groups
+function onGrupoDragStart(e) {
+  dragSrcGrupoId = this.dataset.gid;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onGrupoDragOver(e) {
+  e.preventDefault();
+  document.querySelectorAll('.grupo-wrap').forEach(el=>el.classList.remove('drag-over'));
+  this.classList.add('drag-over');
+}
+function onGrupoDrop(e) {
+  e.preventDefault();
+  const targetId = this.dataset.gid;
+  if(dragSrcGrupoId && targetId && dragSrcGrupoId !== targetId) {
+    const srcIdx = grupos.findIndex(g=>g.id===dragSrcGrupoId);
+    const tgtIdx = grupos.findIndex(g=>g.id===targetId);
+    const [moved] = grupos.splice(srcIdx,1);
+    grupos.splice(tgtIdx,0,moved);
+    renderGrupos(); recalcTodo();
+  }
+}
+function onGrupoDragEnd() {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.grupo-wrap').forEach(el=>el.classList.remove('drag-over'));
+  dragSrcGrupoId = null;
+}
+
+function buildItemRow(gid, item) {
+  const precioU = Math.round((item.costoU||0)*(1+(item.margen||0)/100));
+  const totalV = precioU*(item.cant||1);
+  const provOpts = proveedoresDisponibles.map(p=>`<option value="${p}" ${item.proveedor===p?'selected':''}>${p}</option>`).join('');
+  return `<tr id="row-${item.id}">
+    <td style="position:relative">
+      <div style="display:flex;gap:3px">
+        <input value="${item.nombre||''}" placeholder="Artículo..." oninput="updateItem('${gid}','${item.id}','nombre',this.value);filtrarArticulosRow(this,'${item.id}')" style="flex:1;width:0" autocomplete="off"/>
+        <button type="button" onclick="event.stopPropagation();toggleArticulosRow('${item.id}')" style="flex-shrink:0;border:1px solid var(--border2);border-radius:4px;background:var(--surface2);cursor:pointer;padding:3px 5px;font-size:10px;color:var(--text3)">▾</button>
+      </div>
+      <div id="art-dd-${item.id}" class="autocomplete-dropdown"></div>
+    </td>
+    <td><input type="number" value="${item.cant||1}" min="1" oninput="updateItemCalc('${gid}','${item.id}','cant',this.value)"/></td>
+    <td><input value="${item.unidad||''}" placeholder="u, rollos, m…" style="font-size:12px" oninput="updateItem('${gid}','${item.id}','unidad',this.value)"/></td>
+    <td class="col-costo"><input type="number" value="${item.costoU||''}" placeholder="0" oninput="updateItemCalc('${gid}','${item.id}','costoU',this.value)"/></td>
+    <td class="col-margen"><input type="number" value="${item.margen!=null?item.margen:40}" min="0" oninput="updateItemCalc('${gid}','${item.id}','margen',this.value)"/></td>
+    <td class="td-calc">${fmt(precioU)}</td>
+    <td class="td-total">${fmt(totalV)}</td>
+    <td class="col-proveedor">
+      <select onchange="updateItem('${gid}','${item.id}','proveedor',this.value)" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;cursor:pointer">
+        <option value="">— Proveedor —</option>
+        ${provOpts}
+      </select>
+    </td>
+    <td><button class="del-btn" onclick="eliminarItem('${gid}','${item.id}')">✕</button></td>
+  </tr>`;
+}
+
+function filtrarArticulosRow(input, iid) {
+  const val = input.value;
+  const dd = document.getElementById('art-dd-'+iid);
+  if(!dd) return;
+  if(!val || val.length < 1) { dd.style.display='none'; return; }
+  const matches = catalogoArticulos.filter(a=>a.toLowerCase().includes(val.toLowerCase())).slice(0,8);
+  if(!matches.length) {
+    // Show option to add new
+    dd.style.display='block';
+    dd.innerHTML=`<div class="autocomplete-item" onclick="elegirArticuloRow('${iid}','${val.replace(/'/g,"\\'")}',null)" style="color:var(--rose-dark)">＋ Agregar "${val}" como nuevo</div>`;
+    return;
+  }
+  dd.style.display='block';
+  dd.innerHTML=matches.map(a=>`<div class="autocomplete-item" onclick="elegirArticuloRow('${iid}','${a.replace(/'/g,"\\'")}',null)">${a}</div>`).join('');
+}
+
+function toggleArticulosRow(iid) {
+  const dd = document.getElementById('art-dd-'+iid);
+  if(!dd) return;
+  if(dd.style.display!=='none') { dd.style.display='none'; return; }
+  const sorted = [...catalogoArticulos].sort((a,b)=>a.localeCompare(b));
+  dd.style.display='block';
+  dd.innerHTML = sorted.length
+    ? sorted.map(a=>`<div class="autocomplete-item" onclick="elegirArticuloRow('${iid}','${a.replace(/'/g,"\\'")}',null)">${a}</div>`).join('')
+    : `<div style="padding:10px 14px;font-size:12px;color:var(--text3);font-style:italic">
+        El catálogo está vacío — escribí el nombre de un artículo y quedará guardado para la próxima vez.
+      </div>`;
+}
+
+function elegirArticuloRow(iid, nombre, el) {
+  // Find which group this item belongs to
+  const row = document.getElementById('row-'+iid);
+  if(row) { const inp=row.querySelector('input[placeholder="Artículo..."]'); if(inp)inp.value=nombre; }
+  const dd = document.getElementById('art-dd-'+iid);
+  if(dd) dd.style.display='none';
+  // Update data
+  for(const g of grupos) {
+    const item=g.items.find(x=>x.id===iid);
+    if(item){item.nombre=nombre;break;}
+  }
+  // Add to catalog if new
+  if(!catalogoArticulos.includes(nombre) && nombre.trim()) catalogoArticulos.push(nombre.trim());
+}
+
+function agregarItemGrupo(gid) {
+  const g = grupos.find(x=>x.id===gid); if(!g) return;
+  const item = {id:uid(),nombre:'',cant:1,unidad:'',costoU:0,margen:40,proveedor:''};
+  g.items.push(item);
+  const tbody = document.getElementById('items-'+gid);
+  if(tbody) { const tr=document.createElement('tr'); tr.id='row-'+item.id; tr.innerHTML=buildItemRow(gid,item).replace(/^<tr[^>]*>/,'').replace(/<\/tr>$/,''); tbody.appendChild(tr); }
+  recalcGrupo(gid);
+}
+
+function updateItem(gid, iid, field, val) {
+  const g=grupos.find(x=>x.id===gid); if(!g) return;
+  const item=g.items.find(x=>x.id===iid); if(item) item[field]=val;
+}
+
+function updateItemCalc(gid, iid, field, val) {
+  const g=grupos.find(x=>x.id===gid); if(!g) return;
+  const item=g.items.find(x=>x.id===iid); if(!item) return;
+  item[field]=parseN(val);
+  const row=document.getElementById('row-'+iid);
+  if(row) {
+    const pU=Math.round((item.costoU||0)*(1+(item.margen||0)/100));
+    const tV=pU*(item.cant||1);
+    const cells=row.querySelectorAll('.td-calc,.td-total');
+    if(cells[0]) cells[0].textContent=fmt(pU);
+    if(cells[1]) cells[1].textContent=fmt(tV);
+  }
+  recalcGrupo(gid);
+}
+
+function eliminarItem(gid, iid) {
+  const g=grupos.find(x=>x.id===gid); if(!g) return;
+  g.items=g.items.filter(x=>x.id!==iid);
+  document.getElementById('row-'+iid)?.remove();
+  recalcGrupo(gid);
+}
+
+function recalcGrupo(gid) {
+  const g=grupos.find(x=>x.id===gid); if(!g) return;
+  const costo=g.items.reduce((s,a)=>s+(a.costoU||0)*(a.cant||1),0);
+  const venta=g.items.reduce((s,a)=>s+Math.round((a.costoU||0)*(1+(a.margen||0)/100))*(a.cant||1),0);
+  // Update grupo subtotals
+  const el=document.querySelector(`#grupo-${gid} .total-cell-value.neg`);
+  const elv=document.querySelector(`#grupo-${gid} .total-cell-value.pos`);
+  if(el) el.textContent=fmt(costo);
+  if(elv) elv.textContent=fmt(venta);
+  recalcTodo();
+}
+
+// ═══════════════════════════════════════════════
+//  INVENTARIO
+// ═══════════════════════════════════════════════
+function agregarInventario() {
+  invItems.push({id:uid(),nombre:'',invId:'',costoRef:0,cant:1,precioCliente:0,notas:''});
+  renderInvItems();
+}
+
+function renderInvItems() {
+  const tbody=document.getElementById('inv-items');
+  tbody.innerHTML=invItems.map(item => {
+    const gan=(item.precioCliente||0)*(item.cant||1);
+    return `<tr id="inv-${item.id}">
+      <td><select onchange="selectInvItem('${item.id}',this.value)" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;cursor:pointer">
+        <option value="">— Elegir del inventario —</option>
+        ${inventarioDisponible.map(a=>`<option value="${a.id}" ${item.invId===a.id?'selected':''}>${a.nombre}</option>`).join('')}
+      </select></td>
+      <td><input type="number" value="${item.cant||1}" min="1" oninput="updateInvCalc('${item.id}','cant',this.value)"/></td>
+      <td class="td-costo col-costo">${fmt(item.costoRef)}</td>
+      <td><input type="number" value="${item.precioCliente||''}" placeholder="0" oninput="updateInvCalc('${item.id}','precioCliente',this.value)"/></td>
+      <td class="td-calc">${fmt(gan)}</td>
+      <td><input value="${item.notas||''}" placeholder="..." oninput="updateInvField('${item.id}','notas',this.value)"/></td>
+      <td><button class="del-btn" onclick="eliminarInv('${item.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+  renderTotalesInv();
+}
+
+function selectInvItem(iid, invId) {
+  const item=invItems.find(x=>x.id===iid); if(!item) return;
+  const inv=inventarioDisponible.find(x=>x.id===invId);
+  if(inv){item.invId=invId;item.nombre=inv.nombre;item.costoRef=inv.costo;}
+  else{item.invId='';item.nombre='';item.costoRef=0;}
+  renderInvItems();
+}
+
+function updateInvCalc(iid, field, val) {
+  const item=invItems.find(x=>x.id===iid); if(!item) return;
+  item[field]=parseN(val);
+  const row=document.getElementById('inv-'+iid);
+  if(row){const gan=(item.precioCliente||0)*(item.cant||1);const c=row.querySelector('.td-calc');if(c)c.textContent=fmt(gan);}
+  renderTotalesInv();
+}
+
+function updateInvField(iid, field, val) {const i=invItems.find(x=>x.id===iid);if(i)i[field]=val;}
+function eliminarInv(iid){invItems=invItems.filter(x=>x.id!==iid);renderInvItems();}
+
+function renderTotalesInv() {
+  const gan=invItems.reduce((s,i)=>(i.precioCliente||0)*(i.cant||1)+s,0);
+  const el=document.getElementById('totals-inv-row');
+  const tot=document.getElementById('totales-inventario');
+  if(invItems.length){
+    tot.style.display='block';
+    el.innerHTML=`<div class="total-cell"><div class="total-cell-label">Ganancia total inventario</div><div class="total-cell-value pos">${fmt(gan)}</div></div>`;
+  } else { tot.style.display='none'; }
+  recalcTodo();
+}
+
+// ═══════════════════════════════════════════════
+//  SERVICIOS
+// ═══════════════════════════════════════════════
+function agregarServicio() {
+  svcItems.push({id:uid(),nombre:'',proveedor:'',costo:0,margen:30,estado:'Por contratar',notas:''});
+  renderSvcItems();
+}
+
+function renderSvcItems() {
+  const tbody=document.getElementById('svc-items');
+  tbody.innerHTML=svcItems.map(item => {
+    const precio=Math.round((item.costo||0)*(1+(item.margen||0)/100));
+    const gan=precio-(item.costo||0);
+    return `<tr id="svc-${item.id}">
+      <td><input value="${item.nombre||''}" placeholder="Nombre del servicio" oninput="updateSvcField('${item.id}','nombre',this.value)"/></td>
+      <td class="col-proveedor">
+        <select onchange="updateSvcField('${item.id}','proveedor',this.value)" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;cursor:pointer">
+          <option value="">— Elegir —</option>
+          ${proveedoresDisponibles.map(p=>`<option value="${p}" ${item.proveedor===p?'selected':''}>${p}</option>`).join('')}
+          ${item.proveedor && !proveedoresDisponibles.includes(item.proveedor)?`<option value="${item.proveedor}" selected>${item.proveedor}</option>`:''}
+        </select>
+      </td>
+      <td class="col-costo"><input type="number" value="${item.costo||''}" placeholder="0" oninput="updateSvcCalc('${item.id}','costo',this.value)"/></td>
+      <td class="col-margen"><input type="number" value="${item.margen||30}" min="0" oninput="updateSvcCalc('${item.id}','margen',this.value)"/></td>
+      <td class="td-calc">${fmt(precio)}</td>
+      <td class="td-calc">${fmt(gan)}</td>
+      <td><button class="del-btn" onclick="eliminarSvc('${item.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+  renderTotalesSvc();
+}
+
+function updateSvcField(iid,field,val){const i=svcItems.find(x=>x.id===iid);if(i)i[field]=val;}
+function updateSvcCalc(iid,field,val){
+  const item=svcItems.find(x=>x.id===iid); if(!item) return;
+  item[field]=parseN(val);
+  const row=document.getElementById('svc-'+iid);
+  if(row){
+    const p=Math.round((item.costo||0)*(1+(item.margen||0)/100));
+    const g=p-(item.costo||0);
+    const cells=row.querySelectorAll('.td-calc');
+    if(cells[0])cells[0].textContent=fmt(p);
+    if(cells[1])cells[1].textContent=fmt(g);
+  }
+  renderTotalesSvc();
+}
+function eliminarSvc(iid){svcItems=svcItems.filter(x=>x.id!==iid);renderSvcItems();}
+
+function renderTotalesSvc() {
+  const costo=svcItems.reduce((s,sv)=>s+(sv.costo||0),0);
+  const venta=svcItems.reduce((s,sv)=>s+Math.round((sv.costo||0)*(1+(sv.margen||0)/100)),0);
+  const gan=venta-costo;
+  const el=document.getElementById('totals-svc-row');
+  const tot=document.getElementById('totales-servicios');
+  if(svcItems.length){
+    tot.style.display='block';
+    el.innerHTML=`
+      <div class="total-cell col-costo"><div class="total-cell-label">Costo total</div><div class="total-cell-value neg">${fmt(costo)}</div></div>
+      <div class="total-cell"><div class="total-cell-label">Precio venta</div><div class="total-cell-value pos">${fmt(venta)}</div></div>
+      <div class="total-cell"><div class="total-cell-label">Ganancia</div><div class="total-cell-value pos">${fmt(gan)}</div></div>`;
+  } else { tot.style.display='none'; }
+  recalcTodo();
+}
+
+// ═══════════════════════════════════════════════
+//  DESPLAZAMIENTOS
+// ═══════════════════════════════════════════════
+function agregarViaje() {
+  transItems.push({id:uid(),desde:'',hasta:'',km:0,idavuelta:true,margen:20,notas:'',_costo:0,_precio:0});
+  renderTransItems();
+}
+
+function renderTransItems() {
+  const tbody=document.getElementById('trans-items');
+  const fuelP=parseN(document.getElementById('fuel-precio').value)||16500;
+  const fuelR=parseN(document.getElementById('fuel-rend').value)||12;
+  tbody.innerHTML=transItems.map(item => {
+    const kmT=(item.km||0)*(item.idavuelta?2:1);
+    const costo=Math.round(kmT/fuelR*fuelP);
+    const precio=Math.round(costo*(1+(item.margen||0)/100));
+    item._costo=costo; item._precio=precio;
+    return `<tr id="trans-${item.id}">
+      <td class="autocomplete-wrap" style="position:relative">
+        <input value="${item.desde||''}" placeholder="Ciudad origen" oninput="updateTransField('${item.id}','desde',this.value);sugerirLugar(this,'${item.id}','desde')" autocomplete="off" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;color:var(--text);"/>
+        <div class="autocomplete-dropdown" id="dd-desde-${item.id}"></div>
+      </td>
+      <td class="autocomplete-wrap" style="position:relative">
+        <input value="${item.hasta||''}" placeholder="Ciudad destino" oninput="updateTransField('${item.id}','hasta',this.value);sugerirLugar(this,'${item.id}','hasta')" autocomplete="off" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;color:var(--text);"/>
+        <div class="autocomplete-dropdown" id="dd-hasta-${item.id}"></div>
+      </td>
+      <td><input type="number" id="km-${item.id}" value="${item.km||''}" placeholder="km" oninput="updateTransCalc('${item.id}','km',this.value)" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;text-align:right"/></td>
+      <td style="text-align:center"><input type="checkbox" ${item.idavuelta?'checked':''} onchange="updateTransIV('${item.id}',this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--rose)"/></td>
+      <td class="td-calc" id="kmt-${item.id}">${kmT}</td>
+      <td class="td-costo col-costo" id="tcosto-${item.id}">${fmt(costo)}</td>
+      <td class="col-margen"><input type="number" value="${item.margen||20}" min="0" oninput="updateTransCalc('${item.id}','margen',this.value)" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none;text-align:right"/></td>
+      <td class="td-total" id="tprecio-${item.id}">${fmt(precio)}</td>
+      <td><input value="${item.notas||''}" placeholder="..." oninput="updateTransField('${item.id}','notas',this.value)" style="width:100%;border:1px solid transparent;border-radius:5px;padding:5px 6px;font-family:var(--font-body);font-size:12px;background:transparent;outline:none"/></td>
+      <td><button class="del-btn" onclick="eliminarTrans('${item.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+  renderTotalesTrans();
+}
+
+// Autocomplete cities — Colombia only
+const ciudadesColombia = ['Bogotá','Medellín','Cali','Barranquilla','Cartagena','Bucaramanga','Cúcuta','Manizales','Pereira','Ibagué','Pasto','Montería','Villavicencio','Armenia','Valledupar','Neiva','Santa Marta','Popayán','Florencia','Sincelejo','Tunja','Riohacha','Quibdó','Mocoa','Leticia','Inírida','Mitú','Puerto Carreño','San José del Guaviare'];
+let sugerirTimer = null;
+
+async function sugerirLugar(input, iid, campo) {
+  clearTimeout(sugerirTimer);
+  const val = input.value;
+  const ddId = `dd-${campo}-${iid}`;
+  const dd = document.getElementById(ddId);
+  if(!dd || val.length < 2) { if(dd) dd.style.display='none'; return; }
+
+  sugerirTimer = setTimeout(async () => {
+    // First show local matches
+    const local = ciudadesColombia.filter(c=>c.toLowerCase().includes(val.toLowerCase())).slice(0,4);
+    let items = local.map(c=>({nombre:c, sub:'Colombia'}));
+
+    // Then try Nominatim for exact addresses
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(val+', Colombia')}&format=json&limit=4&countrycodes=co`).then(r=>r.json());
+      res.forEach(r=>{
+        const n=r.display_name.split(',').slice(0,2).join(',').trim();
+        if(!items.some(x=>x.nombre.toLowerCase()===n.toLowerCase())) items.push({nombre:n,sub:r.display_name.split(',').slice(2,4).join(',').trim()});
+      });
+    } catch(e){}
+
+    if(!items.length){dd.style.display='none';return;}
+    dd.style.display='block';
+    dd.innerHTML = items.slice(0,6).map(it=>
+      `<div class="autocomplete-item" onclick="elegirLugar('${iid}','${campo}','${it.nombre.replace(/'/g,"\\'")}')">
+        <span>📍</span>
+        <div><div>${it.nombre}</div>${it.sub?`<div class="item-sub">${it.sub}</div>`:''}</div>
+      </div>`
+    ).join('');
+  }, 300);
+}
+
+async function elegirLugar(iid, campo, val) {
+  const item=transItems.find(x=>x.id===iid); if(!item) return;
+  item[campo]=val;
+  const input=document.querySelector(`#trans-${iid} input[placeholder="${campo==='desde'?'Ciudad origen':'Ciudad destino'}"]`);
+  if(input) input.value=val;
+  document.getElementById(`dd-${campo}-${iid}`).style.display='none';
+  // Auto-calc km if both fields filled
+  if(item.desde && item.hasta) await calcKmAuto(iid);
+}
+
+function updateTransField(iid,field,val){const i=transItems.find(x=>x.id===iid);if(i)i[field]=val;}
+function updateTransIV(iid,val){const i=transItems.find(x=>x.id===iid);if(i){i.idavuelta=val;recalcTransRow(iid);}}
+function updateTransCalc(iid,field,val){const i=transItems.find(x=>x.id===iid);if(i){i[field]=parseN(val);recalcTransRow(iid);}}
+
+function recalcTransRow(iid) {
+  const item=transItems.find(x=>x.id===iid); if(!item) return;
+  const fuelP=parseN(document.getElementById('fuel-precio').value)||16500;
+  const fuelR=parseN(document.getElementById('fuel-rend').value)||12;
+  const kmT=(item.km||0)*(item.idavuelta?2:1);
+  const costo=Math.round(kmT/fuelR*fuelP);
+  const precio=Math.round(costo*(1+(item.margen||0)/100));
+  item._costo=costo; item._precio=precio;
+  const kt=document.getElementById('kmt-'+iid);
+  const tc=document.getElementById('tcosto-'+iid);
+  const tp=document.getElementById('tprecio-'+iid);
+  if(kt)kt.textContent=kmT;
+  if(tc)tc.textContent=fmt(costo);
+  if(tp)tp.textContent=fmt(precio);
+  renderTotalesTrans();
+}
+
+function eliminarTrans(iid){transItems=transItems.filter(x=>x.id!==iid);renderTransItems();}
+
+function renderTotalesTrans() {
+  const costo=transItems.reduce((s,t)=>s+(t._costo||0),0);
+  const venta=transItems.reduce((s,t)=>s+(t._precio||0),0);
+  const tot=document.getElementById('totales-trans');
+  const el=document.getElementById('totals-trans-row');
+  if(transItems.length){
+    tot.style.display='block';
+    el.innerHTML=`
+      <div class="total-cell col-costo"><div class="total-cell-label">Costo combustible</div><div class="total-cell-value neg">${fmt(costo)}</div></div>
+      <div class="total-cell"><div class="total-cell-label">Precio venta</div><div class="total-cell-value pos">${fmt(venta)}</div></div>`;
+  } else {tot.style.display='none';}
+  recalcTodo();
+}
+
+async function calcKmAuto(iid) {
+  const item=transItems.find(x=>x.id===iid); if(!item||!item.desde||!item.hasta) return;
+  try {
+    const [gf,gt]=await Promise.all([
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(item.desde+', Colombia')}&format=json&limit=1`).then(r=>r.json()),
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(item.hasta+', Colombia')}&format=json&limit=1`).then(r=>r.json())
+    ]);
+    if(!gf[0]||!gt[0]) return;
+    const route=await fetch(`https://router.project-osrm.org/route/v1/driving/${gf[0].lon},${gf[0].lat};${gt[0].lon},${gt[0].lat}?overview=false`).then(r=>r.json());
+    if(route.routes?.[0]) {
+      const km=Math.round(route.routes[0].distance/1000);
+      item.km=km;
+      const inp=document.getElementById('km-'+iid);
+      if(inp) inp.value=km;
+      recalcTransRow(iid);
+    }
+  } catch(e){}
+}
+
+async function buscarPrecioCombustible() {
+  document.getElementById('fuel-badge').textContent='Buscando...';
+  // Precio oficial gasolina corriente Colombia — actualizado mensualmente por SICOM/UPME
+  // Valor aproximado vigente 2025
+  document.getElementById('fuel-precio').value=16500;
+  document.getElementById('fuel-badge').textContent=`Precio aprox. gasolina corriente Colombia · ${new Date().toLocaleDateString('es-CO')}`;
+  renderTransItems();
+}
+
+// ═══════════════════════════════════════════════
+//  RECALC GENERAL
+// ═══════════════════════════════════════════════
+let _autoSaveTimer = null;
+function autoSave() { clearTimeout(_autoSaveTimer); _autoSaveTimer = setTimeout(()=>{ if(cotizacionId) guardarCotizacion(); }, 3000); }
+
+function recalcTodo() {
+  const artCosto=grupos.reduce((s,g)=>s+g.items.reduce((ss,a)=>ss+(a.costoU||0)*(a.cant||1),0),0);
+  const artVenta=grupos.reduce((s,g)=>s+g.items.reduce((ss,a)=>ss+Math.round((a.costoU||0)*(1+(a.margen||0)/100))*(a.cant||1),0),0);
+  const anyArt=grupos.some(g=>g.items.length>0);
+  document.getElementById('totales-articulos').style.display=anyArt?'block':'none';
+  if(anyArt){
+    document.getElementById('totals-art-row').innerHTML=`
+      <div class="total-cell col-costo"><div class="total-cell-label">Costo total artículos</div><div class="total-cell-value neg">${fmt(artCosto)}</div></div>
+      <div class="total-cell"><div class="total-cell-label">Precio venta total</div><div class="total-cell-value pos">${fmt(artVenta)}</div></div>
+      <div class="total-cell"><div class="total-cell-label">Ganancia artículos</div><div class="total-cell-value pos">${fmt(artVenta-artCosto)}</div></div>`;
+  }
+
+  const invGan=invItems.reduce((s,i)=>(i.precioCliente||0)*(i.cant||1)+s,0);
+  const svcCosto=svcItems.reduce((s,sv)=>s+(sv.costo||0),0);
+  const svcVenta=svcItems.reduce((s,sv)=>s+Math.round((sv.costo||0)*(1+(sv.margen||0)/100)),0);
+  const transCosto=transItems.reduce((s,t)=>s+(t._costo||0),0);
+  const transVenta=transItems.reduce((s,t)=>s+(t._precio||0),0);
+
+  const totalCosto=artCosto+svcCosto+transCosto;
+  const totalVenta=artVenta+invGan+svcVenta+transVenta;
+  const totalGan=totalVenta-totalCosto;
+  const margenPct=totalVenta>0?Math.round(totalGan/totalVenta*100):0;
+
+  document.getElementById('res-costo').textContent=fmt(totalCosto);
+  document.getElementById('res-venta').textContent=fmt(totalVenta);
+  document.getElementById('res-ganancia').textContent=fmt(totalGan);
+  document.getElementById('res-margen-pct').textContent=margenPct+'%';
+  document.getElementById('margen-bar').style.width=Math.min(margenPct,100)+'%';
+
+  const rows=[
+    {icon:'🛍',label:'Artículos de un solo uso',costo:artCosto,venta:artVenta},
+    {icon:'📦',label:'Del inventario',costo:0,venta:invGan},
+    {icon:'🤝',label:'Servicios',costo:svcCosto,venta:svcVenta},
+    {icon:'🚗',label:'Desplazamientos',costo:transCosto,venta:transVenta},
+  ].filter(r=>r.venta>0||r.costo>0);
+
+  autoSave();
+  document.getElementById('res-desglose').innerHTML=rows.length?`
+    <div style="margin-top:16px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:10px">Desglose por sección</div>
+      ${rows.map(r=>{
+        const m=r.venta>0?Math.round((r.venta-r.costo)/r.venta*100):0;
+        return `<div class="desglose-row">
+          <span class="desglose-label">${r.icon} ${r.label}</span>
+          <div class="desglose-nums">
+            ${r.costo>0?`<span class="desglose-costo">Costo: ${fmt(r.costo)}</span>`:'<span class="desglose-costo"></span>'}
+            <span class="desglose-venta">${fmt(r.venta)}</span>
+            <span class="desglose-margen">${m}%</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`:''
+}
+
+// ═══════════════════════════════════════════════
+//  EXPORTAR PDF
+// ═══════════════════════════════════════════════
+function exportarPDF() {
+  const modal = document.getElementById('export-modal');
+  modal.style.display = 'flex';
+}
+function cerrarExportModal() {
+  document.getElementById('export-modal').style.display = 'none';
+}
+
+function generarPDFInterno() {
+  const fmt2 = n => '$' + Number(n||0).toLocaleString('es-CO');
+  const cliente = document.getElementById('cot-cliente').value || '—';
+  const lugar   = document.getElementById('cot-lugar').value || '—';
+  const fecha   = document.getElementById('cot-fecha').value
+    ? new Date(document.getElementById('cot-fecha').value+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'})
+    : '—';
+  const notas = document.getElementById('cot-notas').value || '';
+
+  // Build sections as simple HTML strings
+  let body = '';
+
+  // ── Artículos ──
+  grupos.forEach(g => {
+    const items = g.items.filter(a => a.nombre);
+    if (!items.length) return;
+    let rows = items.map(a => {
+      const pU = Math.round((a.costoU||0)*(1+(a.margen||0)/100));
+      return '<tr><td>' + a.nombre + '</td><td align="right">' + (a.cant||1) + ' ' + (a.unidad||'') + '</td><td align="right" style="color:#D93025">' + fmt2(a.costoU||0) + '</td><td align="right">' + (a.margen||0) + '%</td><td align="right">' + fmt2(pU) + '</td><td align="right" style="color:#2E7D32;font-weight:600">' + fmt2(pU*(a.cant||1)) + '</td><td>' + (a.proveedor||'—') + '</td></tr>';
+    }).join('');
+    const gCosto = items.reduce((s,a)=>s+(a.costoU||0)*(a.cant||1),0);
+    const gVenta = items.reduce((s,a)=>s+Math.round((a.costoU||0)*(1+(a.margen||0)/100))*(a.cant||1),0);
+    body += '<h3 style="font-family:Georgia,serif;font-style:italic;color:#7A3530;margin:14px 0 6px;font-size:13pt">' + (g.nombre||'Grupo') + '</h3>';
+    body += '<table width="100%" cellpadding="5" cellspacing="0" style="border-collapse:collapse;font-size:9pt;margin-bottom:4px"><thead><tr style="background:#F5F0EA"><th align="left">Artículo</th><th align="right">Cant/Unidad</th><th align="right">Costo unit.</th><th align="right">Margen</th><th align="right">Precio unit.</th><th align="right">Total venta</th><th align="left">Proveedor</th></tr></thead><tbody>' + rows + '</tbody><tfoot><tr style="background:#F5F0EA;font-weight:700"><td colspan="2"></td><td align="right" style="color:#D93025">Costo: ' + fmt2(gCosto) + '</td><td></td><td></td><td align="right" style="color:#2E7D32">Venta: ' + fmt2(gVenta) + '</td><td style="color:#7A3530">Gan: ' + fmt2(gVenta-gCosto) + '</td></tr></tfoot></table>';
+  });
+
+  // ── Inventario ──
+  const invR = invItems.filter(i => i.nombre);
+  if (invR.length) {
+    const invGan = invR.reduce((s,i)=>(i.precioCliente||0)*(i.cant||1)+s, 0);
+    let rows = invR.map(i => '<tr><td>' + i.nombre + '</td><td align="right">' + (i.cant||1) + '</td><td align="right" style="color:#D93025">' + fmt2(i.costoRef||0) + '</td><td align="right">' + fmt2(i.precioCliente||0) + '</td><td align="right" style="color:#2E7D32;font-weight:600">' + fmt2((i.precioCliente||0)*(i.cant||1)) + '</td><td>' + (i.notas||'—') + '</td></tr>').join('');
+    body += '<h3 style="font-family:Georgia,serif;font-style:italic;color:#7A3530;margin:18px 0 6px;font-size:13pt">Del inventario</h3>';
+    body += '<table width="100%" cellpadding="5" cellspacing="0" style="border-collapse:collapse;font-size:9pt;margin-bottom:4px"><thead><tr style="background:#F5F0EA"><th align="left">Artículo</th><th align="right">Cant.</th><th align="right">Costo ref.</th><th align="right">Precio cliente</th><th align="right">Ganancia</th><th align="left">Notas</th></tr></thead><tbody>' + rows + '</tbody><tfoot><tr style="background:#F5F0EA;font-weight:700"><td colspan="4" align="right">Ganancia total inventario:</td><td align="right" style="color:#2E7D32">' + fmt2(invGan) + '</td><td></td></tr></tfoot></table>';
+  }
+
+  // ── Servicios ──
+  const svcR = svcItems.filter(s => s.nombre);
+  if (svcR.length) {
+    const svcCosto = svcR.reduce((s,sv)=>s+(sv.costo||0), 0);
+    const svcVenta = svcR.reduce((s,sv)=>s+Math.round((sv.costo||0)*(1+(sv.margen||0)/100)), 0);
+    let rows = svcR.map(s => { const p = Math.round((s.costo||0)*(1+(s.margen||0)/100)); return '<tr><td>' + s.nombre + '</td><td>' + (s.proveedor||'—') + '</td><td align="right" style="color:#D93025">' + fmt2(s.costo||0) + '</td><td align="right">' + (s.margen||0) + '%</td><td align="right">' + fmt2(p) + '</td><td align="right" style="color:#2E7D32;font-weight:600">' + fmt2(p-(s.costo||0)) + '</td></tr>'; }).join('');
+    body += '<h3 style="font-family:Georgia,serif;font-style:italic;color:#7A3530;margin:18px 0 6px;font-size:13pt">Servicios</h3>';
+    body += '<table width="100%" cellpadding="5" cellspacing="0" style="border-collapse:collapse;font-size:9pt;margin-bottom:4px"><thead><tr style="background:#F5F0EA"><th align="left">Servicio</th><th align="left">Proveedor</th><th align="right">Costo</th><th align="right">Margen</th><th align="right">Precio venta</th><th align="right">Ganancia</th></tr></thead><tbody>' + rows + '</tbody><tfoot><tr style="background:#F5F0EA;font-weight:700"><td colspan="2"></td><td align="right" style="color:#D93025">' + fmt2(svcCosto) + '</td><td></td><td align="right" style="color:#2E7D32">' + fmt2(svcVenta) + '</td><td align="right" style="color:#2E7D32">' + fmt2(svcVenta-svcCosto) + '</td></tr></tfoot></table>';
+  }
+
+  // ── Desplazamientos ──
+  const transR = transItems.filter(t => t.desde && t.hasta);
+  if (transR.length) {
+    const tCosto = transR.reduce((s,t)=>s+(t._costo||0), 0);
+    const tVenta = transR.reduce((s,t)=>s+(t._precio||0), 0);
+    let rows = transR.map(t => '<tr><td>' + t.desde + '</td><td>' + t.hasta + '</td><td align="right">' + (t.km||0) + '</td><td align="center">' + (t.idavuelta?'Sí':'No') + '</td><td align="right">' + ((t.km||0)*(t.idavuelta?2:1)) + '</td><td align="right" style="color:#D93025">' + fmt2(t._costo||0) + '</td><td align="right">' + (t.margen||0) + '%</td><td align="right" style="color:#2E7D32;font-weight:600">' + fmt2(t._precio||0) + '</td><td>' + (t.notas||'—') + '</td></tr>').join('');
+    body += '<h3 style="font-family:Georgia,serif;font-style:italic;color:#7A3530;margin:18px 0 6px;font-size:13pt">Desplazamientos</h3>';
+    body += '<table width="100%" cellpadding="5" cellspacing="0" style="border-collapse:collapse;font-size:9pt;margin-bottom:4px"><thead><tr style="background:#F5F0EA"><th align="left">Desde</th><th align="left">Hasta</th><th align="right">Km</th><th align="center">I/V</th><th align="right">Km total</th><th align="right">Costo comb.</th><th align="right">Margen</th><th align="right">Precio venta</th><th align="left">Notas</th></tr></thead><tbody>' + rows + '</tbody><tfoot><tr style="background:#F5F0EA;font-weight:700"><td colspan="5"></td><td align="right" style="color:#D93025">' + fmt2(tCosto) + '</td><td></td><td align="right" style="color:#2E7D32">' + fmt2(tVenta) + '</td><td></td></tr></tfoot></table>';
+  }
+
+  // ── Totales ──
+  const artCosto = grupos.reduce((s,g)=>s+g.items.reduce((ss,a)=>ss+(a.costoU||0)*(a.cant||1),0),0);
+  const artVenta = grupos.reduce((s,g)=>s+g.items.reduce((ss,a)=>ss+Math.round((a.costoU||0)*(1+(a.margen||0)/100))*(a.cant||1),0),0);
+  const invGanT  = invItems.reduce((s,i)=>(i.precioCliente||0)*(i.cant||1)+s, 0);
+  const svcC     = svcItems.reduce((s,sv)=>s+(sv.costo||0), 0);
+  const svcV     = svcItems.reduce((s,sv)=>s+Math.round((sv.costo||0)*(1+(sv.margen||0)/100)), 0);
+  const trC      = transItems.reduce((s,t)=>s+(t._costo||0), 0);
+  const trV      = transItems.reduce((s,t)=>s+(t._precio||0), 0);
+  const totalCosto = artCosto + svcC + trC;
+  const totalVenta = artVenta + invGanT + svcV + trV;
+  const totalGan   = totalVenta - totalCosto;
+  const margenPct  = totalCosto > 0 ? Math.round(totalGan/totalCosto*100) : 0;
+
+  const resumen = '<table width="100%" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-size:10pt;margin-top:6px;border:1px solid #DDD"><thead><tr style="background:#C8625A;color:white;font-size:11pt"><th align="left" style="padding:9px 8px">Sección</th><th align="right" style="padding:9px 8px">Costo</th><th align="right" style="padding:9px 8px">Venta</th><th align="right" style="padding:9px 8px">Ganancia</th><th align="right" style="padding:9px 8px">Margen</th></tr></thead><tbody>'
+    + [
+        ['🛍 Artículos de un solo uso', artCosto, artVenta],
+        ['📦 Del inventario', 0, invGanT],
+        ['🤝 Servicios', svcC, svcV],
+        ['🚗 Desplazamientos', trC, trV],
+      ].filter(r => r[2] > 0 || r[1] > 0).map((r,i) => {
+        const g = r[2]-r[1]; const m = r[1]>0 ? Math.round(g/r[1]*100) : 100;
+        return '<tr style="background:' + (i%2?'#FFF3F2':'white') + ';border-bottom:1px solid #EEE8E0"><td style="padding:6px 7px;font-weight:500">' + r[0] + '</td><td align="right" style="color:#D93025;font-weight:600;padding:6px 7px">' + (r[1]>0?fmt2(r[1]):'—') + '</td><td align="right" style="font-weight:600;padding:6px 7px">' + fmt2(r[2]) + '</td><td align="right" style="color:#2E7D32;font-weight:700;font-size:11pt;padding:6px 7px">' + fmt2(g) + '</td><td align="right" style="color:#E65100;font-weight:700;font-size:11pt;padding:6px 7px">' + m + '%</td></tr>';
+      }).join('')
+    + '<tr style="background:#1A1612;color:white;font-weight:700;font-size:12pt;border-top:3px solid #C8625A"><td style="padding:8px 7px">TOTAL GENERAL</td><td align="right" style="color:#FF8A80;padding:8px 7px">' + fmt2(totalCosto) + '</td><td align="right" style="color:#A5D6A7;padding:8px 7px">' + fmt2(totalVenta) + '</td><td align="right" style="color:#A5D6A7;font-size:13pt;padding:8px 7px">' + fmt2(totalGan) + '</td><td align="right" style="color:#FFCC80;font-size:13pt;padding:8px 7px">' + margenPct + '%</td></tr></tbody></table>';
+
+  const notasHtml = notas ? '<div style="margin:16px 0;padding:10px 14px;border-left:3px solid #B8924A;background:#FDF6EC;font-style:italic;color:#5A5248;font-size:9.5pt">' + notas + '</div>' : '';
+
+  const html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Cotización interna — Amaría</title>'
+    + '<style>body{font-family:Arial,sans-serif;font-size:10pt;color:#1A1612;padding:20px;max-width:1000px;margin:0 auto}'
+    + 'table{width:100%}td,th{padding:5px 7px;border-bottom:1px solid #EEE8E0}'
+    + 'h2{font-family:Georgia,serif;font-style:italic;color:#7A3530}'
+    + 'h3{font-family:Georgia,serif;font-style:italic;color:#7A3530}'
+    + '@media print{@page{margin:1.5cm;size:A4}button{display:none!important}}'
+    + '</style></head><body>'
+    + '<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #C8625A;padding-bottom:12px;margin-bottom:18px">'
+    + '<div><h2 style="font-size:22pt;margin:0">Amaría</h2><div style="font-size:8pt;letter-spacing:2px;color:#9A928A;text-transform:uppercase">Event Planner · Copia interna</div></div>'
+    + '<div style="text-align:right;font-size:9pt;color:#5A5248"><b>Cliente:</b> ' + cliente + '<br><b>Lugar:</b> ' + lugar + '<br><b>Fecha:</b> ' + fecha + '</div>'
+    + '</div>'
+    + '<h3 style="font-size:14pt;margin:0 0 14px">Detalle de la cotización</h3>'
+    + (grupos.some(g=>g.items.some(a=>a.nombre)) ? '<h3 style="border-bottom:1px solid #EEE8E0;padding-bottom:6px">🛍 Artículos de un solo uso</h3>' + body.split('<h3')[0] : '')
+    + body.replace(/^[^<]*/, '')
+    + notasHtml
+    + '<h3 style="font-size:14pt;margin:20px 0 10px;border-top:2px solid #C8625A;padding-top:14px">Resumen de la cotización</h3>'
+    + resumen
+    + '<\/body><\/html>';
+
+  const win = window.open('', '_blank');
+  if (!win) { alert('Por favor permitir ventanas emergentes para este sitio'); return; }
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => win.print(), 600);
+}
+
+
+function buildPDFInternoHTML({cliente,lugar,fecha,notas,artHtml,invHtml,svcHtml,transHtml,totalCosto,totalVenta,totalGan,margenPct,fmt2}) {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>Cotización interna — Amaría</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{--rose:#C8625A;--rose-dark:#8A3A32;--gold:#B8924A;--sage:#4A6B4D;--text:#1A1612;--text2:#4A4540;--text3:#8A8278;--border:#E0D8CE;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);font-size:9pt;font-weight:400;line-height:1.5;background:white;padding:12mm 14mm 14mm;}
+
+  /* Header */
+  .int-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7mm;padding-bottom:5mm;border-bottom:1.5px solid var(--rose);}
+  .brand{font-family:'Cormorant Garamond',serif;font-size:22pt;font-style:italic;font-weight:600;color:var(--rose-dark);line-height:1;}
+  .brand-sub{font-size:7.5pt;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:400;margin-top:2px;}
+  .header-meta{text-align:right;font-size:8.5pt;}
+  .header-meta .meta-row{display:flex;gap:6mm;justify-content:flex-end;margin-bottom:1mm;}
+  .meta-label{color:var(--text3);font-size:7.5pt;text-transform:uppercase;letter-spacing:0.8px;font-weight:600;}
+  .meta-val{color:var(--text);font-weight:500;}
+
+  /* Section */
+  .section-block{margin-bottom:7mm;}
+  .section-header{font-family:'Cormorant Garamond',serif;font-size:13pt;font-style:italic;font-weight:600;color:var(--rose-dark);margin-bottom:2mm;padding-bottom:1.5mm;border-bottom:0.5px solid var(--border);}
+  .grupo-block{margin-bottom:5mm;}
+  .grupo-nombre{font-size:9pt;font-weight:700;color:var(--text);background:#F9F5F0;padding:2mm 3mm;border-left:2.5px solid var(--rose);margin-bottom:1.5mm;letter-spacing:0.3px;}
+
+  /* Table */
+  .int-table{width:100%;border-collapse:collapse;font-size:8.5pt;}
+  .int-table thead tr{background:#F5F0EA;}
+  .int-table th{padding:2mm 2.5mm;font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);text-align:left;border-bottom:0.5px solid var(--border);white-space:nowrap;}
+  .int-table th.num,.int-table td.num{text-align:right;}
+  .int-table th.ctr,.int-table td.ctr{text-align:center;}
+  .int-table td{padding:2mm 2.5mm;border-bottom:0.5px solid #EEE8E0;vertical-align:middle;}
+  .int-table tbody tr:last-child td{border-bottom:none;}
+  .int-table tfoot td{padding:2mm 2.5mm;background:#F5F0EA;font-size:8pt;}
+  .w-art{width:28%;}
+  .neg{color:var(--rose-dark);font-weight:500;}
+  .pos{color:#2E7D32;font-weight:600;}
+  .muted{color:var(--text3);}
+  .footer-val{font-weight:700;}
+
+  /* Resumen */
+  .resumen-block{margin-top:7mm;padding:5mm 6mm;background:#FAF5F0;border:0.5px solid var(--border);border-radius:3mm;}
+  .resumen-title{font-family:'Cormorant Garamond',serif;font-size:13pt;font-style:italic;font-weight:600;color:var(--text);margin-bottom:4mm;}
+  .resumen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-bottom:4mm;}
+  .res-box{background:white;border:0.5px solid var(--border);border-radius:2mm;padding:3mm;}
+  .res-box-label{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3);margin-bottom:1.5mm;}
+  .res-box-val{font-family:'Cormorant Garamond',serif;font-size:16pt;font-weight:600;}
+  .res-box-val.neg{color:var(--rose-dark);}
+  .res-box-val.pos{color:#2E7D32;}
+  .margen-label{font-size:8pt;color:var(--text2);margin-bottom:1.5mm;}
+  .margen-bar-track{height:5px;background:#E0D8CE;border-radius:3px;overflow:hidden;}
+  .margen-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#D93025,#E65100,#2E7D32);}
+
+  /* Desglose */
+  .desglose-table{width:100%;border-collapse:collapse;font-size:8.5pt;margin-top:4mm;}
+  .desglose-table th{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);padding:1.5mm 2mm;border-bottom:0.5px solid var(--border);}
+  .desglose-table td{padding:2mm;border-bottom:0.5px solid #EEE8E0;vertical-align:middle;}
+  .desglose-table th.r,.desglose-table td.r{text-align:right;}
+
+  /* Notas */
+  .notas-block{margin-top:5mm;padding:3mm 4mm;background:white;border-left:2px solid var(--gold);font-size:8.5pt;color:var(--text2);font-style:italic;line-height:1.6;}
+  .notas-label{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--gold);margin-bottom:1.5mm;font-style:normal;}
+
+  /* Footer */
+  .int-footer{margin-top:8mm;padding-top:3mm;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;font-size:7.5pt;color:var(--text3);}
+
+  /* Artículos section title */
+  .art-section-title{font-family:'Cormorant Garamond',serif;font-size:13pt;font-style:italic;font-weight:600;color:var(--rose-dark);margin-bottom:3mm;padding-bottom:1.5mm;border-bottom:0.5px solid var(--border);}
+
+  @media print{
+    body{padding:8mm 10mm;}
+    @page{margin:0;size:A4;}
+    .section-block,.grupo-block{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+  <div class="int-header">
+    <div>
+      <div class="brand">Amaría</div>
+      <div class="brand-sub">Event Planner · Copia interna</div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-row"><span class="meta-label">Cliente</span><span class="meta-val">${cliente}</span></div>
+      <div class="meta-row"><span class="meta-label">Lugar</span><span class="meta-val">${lugar}</span></div>
+      <div class="meta-row"><span class="meta-label">Fecha</span><span class="meta-val">${fecha}</span></div>
+    </div>
+  </div>
+
+  ${artHtml ? `<div class="art-section-title">🛍 Artículos de un solo uso</div>${artHtml}` : ''}
+  ${invHtml}
+  ${svcHtml}
+  ${transHtml}
+
+  ${notas ? `<div class="notas-block"><div class="notas-label">Notas internas</div>${notas}</div>` : ''}
+
+  <div class="resumen-block">
+    <div class="resumen-title">Resumen de la cotización</div>
+    <div class="resumen-grid">
+      <div class="res-box"><div class="res-box-label">Costo total</div><div class="res-box-val neg">${fmt2(totalCosto)}</div></div>
+      <div class="res-box"><div class="res-box-label">Precio de venta</div><div class="res-box-val">${fmt2(totalVenta)}</div></div>
+      <div class="res-box"><div class="res-box-label">Ganancia estimada</div><div class="res-box-val pos">${fmt2(totalGan)}</div></div>
+    </div>
+    <div class="margen-label">Margen de ganancia: <strong>${margenPct}%</strong></div>
+    <div class="margen-bar-track"><div class="margen-bar-fill" style="width:${Math.min(margenPct,100)}%"></div></div>
+
+    <!-- Desglose por sección -->
+    ${(() => {
+      const invGan3 = invItems.reduce((s,i)=>(i.precioCliente||0)*(i.cant||1)+s,0);
+      const rows = [
+        { icon:'🛍', label:'Artículos de un solo uso', costo:artTotalCosto, venta:artTotalVenta },
+        { icon:'📦', label:'Del inventario',           costo:0,             venta:invGan3 },
+        { icon:'🤝', label:'Servicios',                costo:svcCosto2,     venta:svcVenta2 },
+        { icon:'🚗', label:'Desplazamientos',          costo:transCosto2,   venta:transVenta2 },
+      ].filter(r => r.venta > 0 || r.costo > 0);
+      if(!rows.length) return '';
+      return `<table class="desglose-table" style="margin-top:4mm">
+        <thead><tr>
+          <th>Sección</th>
+          <th class="r">Costo</th>
+          <th class="r">Precio venta</th>
+          <th class="r">Ganancia</th>
+          <th class="r">Margen</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(r => {
+            const gan = r.venta - r.costo;
+            const m = r.costo > 0 ? Math.round(gan/r.costo*100) : 100;
+            return `<tr>
+              <td>${r.icon} ${r.label}</td>
+              <td class="r" style="color:#D93025">${r.costo>0?fmt2(r.costo):'—'}</td>
+              <td class="r" style="font-weight:600">${fmt2(r.venta)}</td>
+              <td class="r" style="color:#2E7D32;font-weight:600">${fmt2(gan)}</td>
+              <td class="r" style="color:#E65100;font-weight:700">${m}%</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+        <tfoot><tr>
+          <td style="font-weight:700">Total general</td>
+          <td class="r" style="color:#D93025;font-weight:700">${fmt2(totalCosto)}</td>
+          <td class="r" style="font-weight:700">${fmt2(totalVenta)}</td>
+          <td class="r" style="color:#2E7D32;font-weight:700">${fmt2(totalGan)}</td>
+          <td class="r" style="color:#E65100;font-weight:700">${margenPct}%</td>
+        </tr></tfoot>
+      </table>`;
+    })()}
+  </div>
+
+  <div class="int-footer">
+    <span>Amaría Event Planner</span>
+    <span>Generado: ${new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'})}</span>
+  </div>
+<\/body>
+<\/html>`;
+}
+
+function generarPDFCliente() {
+  const cliente = document.getElementById('cot-cliente').value || 'Cliente';
+  const lugar   = document.getElementById('cot-lugar').value || '';
+  const fecha   = document.getElementById('cot-fecha').value
+    ? new Date(document.getElementById('cot-fecha').value+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'})
+    : '';
+  const notas   = document.getElementById('cot-notas').value || '';
+
+  // Collect items for client view (no costs/margins/providers)
+  let sections = [];
+
+  // Artículos grupos
+  grupos.forEach(g => {
+    if(!g.items.length) return;
+    const items = g.items.filter(a => a.nombre);
+    if(!items.length) return;
+    sections.push({
+      tipo: 'articulos',
+      nombre: g.nombre || 'Artículos',
+      rows: items.map(a => ({
+        desc: a.nombre,
+        detalle: [a.cant > 1 ? a.cant + (a.unidad ? ' ' + a.unidad : '') : '', a.unidad && a.cant <= 1 ? a.unidad : ''].filter(Boolean).join(' '),
+        precio: Math.round((a.costoU||0)*(1+(a.margen||0)/100))*(a.cant||1)
+      }))
+    });
+  });
+
+  // Inventario
+  const invR = invItems.filter(i=>i.nombre && i.precioCliente>0);
+  if(invR.length) sections.push({
+    tipo:'inventario', nombre:'Elementos incluidos',
+    rows: invR.map(i=>({desc:i.nombre, detalle:i.cant>1?'×'+i.cant:'', precio:i.precioCliente*(i.cant||1)}))
+  });
+
+  // Servicios
+  const svcR = svcItems.filter(s=>s.nombre);
+  if(svcR.length) sections.push({
+    tipo:'servicios', nombre:'Servicios',
+    rows: svcR.map(s=>({desc:s.nombre, detalle:s.estado!=='Por contratar'?s.estado:'', precio:Math.round((s.costo||0)*(1+(s.margen||0)/100))}))
+  });
+
+  // Totals
+  const totalVenta = sections.reduce((s,sec)=>s+sec.rows.reduce((ss,r)=>ss+r.precio,0),0);
+
+  // Build HTML
+  const html = buildPDFClienteHTML({cliente,lugar,fecha,notas,sections,totalVenta});
+  const win = window.open('','_blank');
+  if(!win) { alert('Por favor permitir ventanas emergentes para este sitio'); return; }
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => win.print(), 800);
+}
+
+function buildPDFClienteHTML({cliente,lugar,fecha,invitados,notas,sections,totalVenta}) {
+  const fmt2 = n => '$' + Number(n||0).toLocaleString('es-CO');
+
+  const sectionHTML = sections.map(sec => {
+    const items = sec.rows.map(r => `
+      <div class="cot-item">
+        <div class="cot-item-dot"></div>
+        <div class="cot-item-name">${r.desc}</div>
+      </div>`).join('');
+    return `
+    <div class="cot-sec">
+      <div class="cot-sec-title">${sec.nombre}</div>
+      ${items}
+    </div>`;
+  }).join('');
+
+  const botanical = `<svg viewBox="0 0 220 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+    <path d="M180 0 Q140 60 120 130 Q100 200 115 270 Q130 340 105 380" stroke="#C8625A" stroke-width="2.5" fill="none"/>
+    <path d="M180 0 Q165 30 172 65" stroke="#C8625A" stroke-width="1.5" fill="none"/>
+    <ellipse cx="128" cy="118" rx="20" ry="7.5" transform="rotate(-55 128 118)" fill="#C8625A"/>
+    <ellipse cx="115" cy="158" rx="18" ry="7" transform="rotate(-48 115 158)" fill="#C8625A"/>
+    <ellipse cx="112" cy="200" rx="16" ry="6.5" transform="rotate(-38 112 200)" fill="#C8625A"/>
+    <ellipse cx="114" cy="242" rx="15" ry="6" transform="rotate(-28 114 242)" fill="#C8625A"/>
+    <ellipse cx="165" cy="50" rx="13" ry="5" transform="rotate(-28 165 50)" fill="#C8625A"/>
+    <circle cx="122" cy="138" r="5" fill="#C8625A"/><circle cx="122" cy="138" r="2" fill="white" opacity="0.6"/>
+    <circle cx="112" cy="218" r="4" fill="#C8625A"/><circle cx="112" cy="218" r="1.5" fill="white" opacity="0.6"/>
+    <path d="M180 0 Q155 45 142 95" stroke="#B8924A" stroke-width="1.2" fill="none" opacity="0.7"/>
+    <ellipse cx="148" cy="82" rx="11" ry="4.5" transform="rotate(-50 148 82)" fill="#B8924A" opacity="0.7"/>
+    <ellipse cx="156" cy="62" rx="10" ry="4" transform="rotate(-40 156 62)" fill="#B8924A" opacity="0.7"/>
+  <\/svg>`;
+
+  const botanical_bl = `<svg viewBox="0 0 160 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+    <path d="M80 220 Q55 175 38 130 Q20 85 32 40" stroke="#C8625A" stroke-width="2" fill="none"/>
+    <ellipse cx="34" cy="118" rx="14" ry="5.5" transform="rotate(45 34 118)" fill="#C8625A"/>
+    <ellipse cx="30" cy="88" rx="12" ry="5" transform="rotate(35 30 88)" fill="#C8625A"/>
+    <circle cx="32" cy="102" r="4" fill="#C8625A"/>
+  <\/svg>`;
+
+  const iconPin = `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1.5C5.51 1.5 3.5 3.51 3.5 6c0 3.75 4.5 8.5 4.5 8.5S12.5 9.75 12.5 6c0-2.49-2.01-4.5-4.5-4.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="#C8625A"/><\/svg>`;
+  const iconCal  = `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2h-1V1h-1.5v1h-5V1H4v1H3C2.45 2 2 2.45 2 3v11c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm0 12H3V5h10v9z" fill="#C8625A"/><\/svg>`;
+  const iconPpl  = `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm0 1.5c-2.67 0-8 1.34-8 4v1.5h16V13.5c0-2.66-5.33-4-8-4z" fill="#C8625A"/><\/svg>`;
+
+  const chipsHTML = [
+    lugar    ? `<div class="chip"><div class="chip-icon">${iconPin}<\/div><div class="chip-text"><div class="chip-label">Lugar del evento<\/div><div class="chip-value">${lugar}<\/div><\/div><\/div>` : '',
+    fecha    ? `<div class="chip"><div class="chip-icon">${iconCal}<\/div><div class="chip-text"><div class="chip-label">Fecha del evento<\/div><div class="chip-value">${fecha}<\/div><\/div><\/div>` : '',
+    invitados? `<div class="chip"><div class="chip-icon">${iconPpl}<\/div><div class="chip-text"><div class="chip-label">Invitados<\/div><div class="chip-value">${invitados} personas<\/div><\/div><\/div>` : '',
+  ].filter(Boolean).join('');
+
+  const fechaHoy = new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Propuesta · ${cliente} · Amaría<\/title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:#f0ede8;min-height:100vh;padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.page{width:100%;max-width:420px;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.18);background:#FDFAF6;}
+.cover{background:#FDFAF6;position:relative;overflow:hidden;min-height:560px;display:flex;flex-direction:column;}
+.cover-stripe{height:4px;background:linear-gradient(90deg,#C8625A 0%,#B8924A 50%,#C8625A 100%);flex-shrink:0;}
+.cover-body{flex:1;padding:28px 26px 24px;position:relative;z-index:2;display:flex;flex-direction:column;}
+.cover-botanical{position:absolute;top:-20px;right:-20px;width:190px;opacity:0.08;z-index:1;pointer-events:none;}
+.cover-botanical-bl{position:absolute;bottom:0;left:-10px;width:120px;opacity:0.07;z-index:1;pointer-events:none;transform:scaleX(-1) rotate(15deg);}
+.cover-brand{margin-bottom:auto;}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;font-weight:600;color:#7A3530;letter-spacing:0.5px;line-height:1;}
+.brand-tagline{font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:#9A8E83;font-weight:300;margin-top:4px;}
+.cover-center{margin:36px 0 28px;flex:1;display:flex;flex-direction:column;justify-content:center;}
+.cover-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#C8625A;font-weight:300;margin-bottom:10px;}
+.cover-para{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;font-weight:300;color:#52493F;line-height:1.1;margin-bottom:2px;}
+.cover-nombre{font-family:'Cormorant Garamond',serif;font-size:44px;font-style:italic;font-weight:600;color:#7A3530;line-height:0.95;margin-bottom:14px;}
+.cover-subtitle{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;font-weight:300;color:#9A8E83;margin-bottom:24px;}
+.ornament{display:flex;align-items:center;gap:8px;margin-bottom:22px;}
+.orn-line{flex:1;height:0.5px;background:#E8DDD2;}
+.orn-dot{width:4px;height:4px;border-radius:50%;background:#C8625A;flex-shrink:0;}
+.orn-dot-sm{width:2.5px;height:2.5px;border-radius:50%;background:#B8924A;flex-shrink:0;}
+.cover-chips{display:flex;flex-direction:column;gap:10px;}
+.chip{display:flex;align-items:flex-start;gap:10px;}
+.chip-icon{width:28px;height:28px;background:#FDF3F2;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chip-icon svg{width:13px;height:13px;}
+.chip-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#9A8E83;font-weight:400;line-height:1;margin-bottom:2px;}
+.chip-value{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;font-weight:500;color:#1C1815;line-height:1.2;}
+.cover-footer{display:flex;align-items:center;justify-content:space-between;padding:13px 26px;background:#7A3530;flex-shrink:0;}
+.cover-footer-text{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.5);font-weight:300;}
+.cover-footer-brand{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:white;font-weight:400;}
+.cotizacion-page{background:#FDFAF6;}
+.cot-header-band{background:white;padding:18px 22px 14px;border-bottom:1px solid #EDE5DB;}
+.cot-header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.cot-header-brand{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:#7A3530;font-weight:600;}
+.cot-header-tag{font-size:10px;background:#FDF3F2;color:#C8625A;border:1px solid #F0C8C4;border-radius:20px;padding:3px 10px;}
+.cot-header-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.cot-meta-item{font-size:11px;color:#9A8E83;}
+.cot-meta-item span{color:#1C1815;font-weight:400;}
+.cot-intro{padding:18px 22px 12px;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:#52493F;text-align:center;line-height:1.7;border-bottom:1px solid #F0E8DE;}
+.cot-sections{padding:14px 14px 6px;}
+.cot-sec{background:white;border:1px solid #EDE5DB;border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.cot-sec-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;font-weight:600;color:#7A3530;padding:10px 14px 8px;background:#FDF3F2;border-bottom:1px solid #F0E8DE;}
+.cot-item{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:0.5px solid #F5EEE8;}
+.cot-item:last-child{border-bottom:none;}
+.cot-item-dot{width:5px;height:5px;border-radius:50%;background:#C8625A;flex-shrink:0;margin-top:6px;}
+.cot-item-name{font-size:14px;color:#1C1815;font-weight:300;flex:1;line-height:1.45;}
+.cot-total{margin:4px 14px 14px;background:white;border:1px solid #EDE5DB;border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;text-align:center;}
+.cot-total::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#C8625A,#B8924A);}
+.cot-total-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#9A8E83;margin-bottom:6px;}
+.cot-total-amt{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:#7A3530;line-height:1;margin-bottom:4px;}
+.cot-total-note{font-size:11px;color:#B8B0A8;font-style:italic;}
+.cot-notas{margin:0 14px 14px;padding:12px 14px;background:#FDF6EC;border-left:3px solid #B8924A;border-radius:0 8px 8px 0;font-size:13px;font-style:italic;color:#52493F;line-height:1.6;}
+.cot-footer{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;background:#7A3530;}
+.cot-footer-brand{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:white;}
+.cot-footer-date{font-size:10px;color:rgba(255,255,255,0.5);}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}
+  html,body{margin:0!important;padding:0!important;background:white!important;display:block!important;}
+  body{gap:0!important;}
+  .page{max-width:100%!important;width:100vw!important;border-radius:0!important;box-shadow:none!important;margin:0!important;page-break-after:always;break-after:page;}
+  .page:last-child{page-break-after:avoid;break-after:avoid;}
+  .cover{min-height:100vh!important;}
+  @page{margin:0!important;size:A4 portrait;}
+}
+<\/style>
+<\/head>
+<body>
+
+<div class="page">
+  <div class="cover">
+    <div class="cover-stripe"><\/div>
+    <div class="cover-botanical">${botanical}<\/div>
+    <div class="cover-botanical-bl">${botanical_bl}<\/div>
+    <div class="cover-body">
+      <div class="cover-brand">
+        <div class="brand-name">Amaría<\/div>
+        <div class="brand-tagline">Event Planner<\/div>
+      <\/div>
+      <div class="cover-center">
+        <div class="cover-eyebrow">Propuesta de servicios<\/div>
+        <div class="cover-para">Para<\/div>
+        <div class="cover-nombre">${cliente}<\/div>
+        <div class="cover-subtitle">Preparada con dedicación y cariño para su evento especial<\/div>
+        <div class="ornament">
+          <div class="orn-line"><\/div><div class="orn-dot-sm"><\/div>
+          <div class="orn-dot"><\/div><div class="orn-dot-sm"><\/div>
+          <div class="orn-line"><\/div>
+        <\/div>
+        <div class="cover-chips">${chipsHTML}<\/div>
+      <\/div>
+    <\/div>
+    <div class="cover-footer">
+      <div class="cover-footer-text">Propuesta confidencial · Event Planner<\/div>
+      <div class="cover-footer-brand">Amaría<\/div>
+    <\/div>
+  <\/div>
+<\/div>
+
+<div class="page">
+  <div class="cotizacion-page">
+    <div class="cot-header-band">
+      <div class="cot-header-top">
+        <div class="cot-header-brand">Amaría<\/div>
+        <div class="cot-header-tag">Propuesta de servicios<\/div>
+      <\/div>
+      <div class="cot-header-meta">
+        <div class="cot-meta-item">Cliente: <span>${cliente}<\/span><\/div>
+        ${fecha ? `<div class="cot-meta-item">Fecha: <span>${fecha}<\/span><\/div>` : ''}
+        ${lugar ? `<div class="cot-meta-item">Lugar: <span>${lugar}<\/span><\/div>` : ''}
+      <\/div>
+    <\/div>
+    <div class="cot-intro">Con mucho cariño y atención al detalle,<br>preparamos esta propuesta especialmente para vos.<\/div>
+    <div class="cot-sections">${sectionHTML}<\/div>
+    ${notas ? `<div class="cot-notas">${notas}<\/div>` : ''}
+    <div class="cot-total">
+      <div class="cot-total-lbl">Inversión total estimada<\/div>
+      <div class="cot-total-amt">${fmt2(totalVenta)}<\/div>
+      <div class="cot-total-note">* Precios sujetos a confirmación · Válida 30 días<\/div>
+    <\/div>
+    <div class="cot-footer">
+      <div class="cot-footer-brand">Amaría<\/div>
+      <div class="cot-footer-date">${fechaHoy}<\/div>
+    <\/div>
+  <\/div>
+<\/div>
+
+<\/body>
+<\/html>`;
+}
+// Expose to window
+Object.assign(window, {
+  loadAppData,
+  guardarCotizacion,
+  calcTotalVenta,
+  buildResumenLabel,
+  showSaveStatus,
+  loadCotizacion,
+  actualizarTitulo,
+  actualizarEstado,
+  toggleSection,
+  filtrarClientes,
+  elegirCliente,
+  agregarGrupo,
+  eliminarGrupo,
+  renderGrupos,
+  buildGrupoHTML,
+  onGrupoDragStart,
+  onGrupoDragOver,
+  onGrupoDrop,
+  onGrupoDragEnd,
+  buildItemRow,
+  filtrarArticulosRow,
+  toggleArticulosRow,
+  elegirArticuloRow,
+  agregarItemGrupo,
+  updateItem,
+  updateItemCalc,
+  eliminarItem,
+  recalcGrupo,
+  agregarInventario,
+  renderInvItems,
+  selectInvItem,
+  updateInvCalc,
+  updateInvField,
+  eliminarInv,
+  renderTotalesInv,
+  agregarServicio,
+  renderSvcItems,
+  updateSvcField,
+  updateSvcCalc,
+  eliminarSvc,
+  renderTotalesSvc,
+  agregarViaje,
+  renderTransItems,
+  sugerirLugar,
+  elegirLugar,
+  updateTransField,
+  updateTransIV,
+  updateTransCalc,
+  recalcTransRow,
+  eliminarTrans,
+  renderTotalesTrans,
+  calcKmAuto,
+  buscarPrecioCombustible,
+  autoSave,
+  recalcTodo,
+  exportarPDF,
+  cerrarExportModal,
+  generarPDFInterno,
+  buildPDFInternoHTML,
+  generarPDFCliente,
+  buildPDFClienteHTML,
+});
+</script>
+</body>
+</html>
