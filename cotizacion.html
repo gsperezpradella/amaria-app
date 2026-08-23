@@ -1754,5 +1754,20 @@ Object.assign(window, {
   buildPDFClienteHTML,
 });
 </script>
+
+<!-- Export modal -->
+<div id="export-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:16px;padding:32px 36px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2);text-align:center">
+    <div style="font-family:var(--font-display);font-size:22px;font-style:italic;color:var(--rose-dark);margin-bottom:8px">¿Para quién es el PDF?</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.5">
+      <strong>Para el cliente</strong> — propuesta elegante sin costos ni márgenes<br>
+      <strong>Interno</strong> — copia completa con todos los datos
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-ghost" onclick="cerrarExportModal();generarPDFInterno()" style="min-width:120px">📋 Interno</button>
+      <button class="btn btn-primary" onclick="cerrarExportModal();generarPDFCliente()" style="min-width:120px">✨ Para el cliente</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
