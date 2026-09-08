@@ -873,7 +873,8 @@ select { cursor: pointer; }
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="cerrarDetalleEvento()">← Volver</button>
           <h2 id="det-titulo" style="font-family:var(--font-display);font-size:24px;font-style:italic;color:var(--text)"></h2>
-          <span id="det-dias-tag" class="tag" style="margin-left:auto;flex-shrink:0"></span>
+          <button id="det-cobrado-btn" class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="toggleCobrado()"></button>
+          <span id="det-dias-tag" class="tag" style="flex-shrink:0"></span>
         </div>
 
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:4px 20px;margin-bottom:24px">
@@ -1043,20 +1044,23 @@ select { cursor: pointer; }
       </div>
 
       <div class="stats-grid" id="fin-stats" style="grid-template-columns:repeat(3,1fr)">
-        <div class="stat-card"><div class="stat-label">Ingresos</div><div class="stat-value amt-pos" id="fin-ingresos">$0</div><div class="stat-sub">de clientes</div></div>
+        <div class="stat-card"><div class="stat-label">Cobrado</div><div class="stat-value amt-pos" id="fin-cobrado">$0</div><div class="stat-sub" id="fin-cobrado-sub">de eventos pagados</div></div>
+        <div class="stat-card"><div class="stat-label">Por cobrar</div><div class="stat-value" id="fin-por-cobrar">$0</div><div class="stat-sub">eventos aún sin marcar</div></div>
         <div class="stat-card"><div class="stat-label">Gastos operativos</div><div class="stat-value amt-neg" id="fin-gastos">$0</div><div class="stat-sub">registrados</div></div>
+      </div>
+      <div class="stats-grid" id="fin-stats-2" style="grid-template-columns:repeat(1,1fr);margin-top:-12px">
         <div class="stat-card"><div class="stat-label">Valor inventario</div><div class="stat-value" id="fin-inventario">$0</div><div class="stat-sub">activos del negocio</div></div>
       </div>
       <div class="stats-grid" style="grid-template-columns:repeat(2,1fr);margin-top:-12px">
         <div class="stat-card" style="border-left:3px solid var(--sage)">
           <div class="stat-label">Balance neto</div>
           <div class="stat-value" id="fin-balance">$0</div>
-          <div class="stat-sub">Ingresos − gastos operativos</div>
+          <div class="stat-sub">Cobrado − gastos operativos</div>
         </div>
         <div class="stat-card" style="border-left:3px solid var(--gold)">
           <div class="stat-label">Balance general</div>
           <div class="stat-value" id="fin-balance-gral">$0</div>
-          <div class="stat-sub">Ingresos − gastos − inventario</div>
+          <div class="stat-sub">Cobrado − gastos − inventario</div>
         </div>
       </div>
 
@@ -1066,7 +1070,7 @@ select { cursor: pointer; }
       </div>
 
       <div id="fin-tab-ingresos">
-        <div class="section-head"><span class="section-label">Ingresos por cliente</span></div>
+        <div class="section-head"><span class="section-label">Ingresos por evento</span></div>
         <div class="box" id="fin-ingresos-list"><div class="empty" style="padding:24px"><span class="empty-icon">💸</span><div class="empty-title">Sin ingresos registrados</div><div class="empty-sub">Cuando haya clientes cargados se van a ver acá</div></div></div>
       </div>
 
@@ -2056,6 +2060,8 @@ async function saveEvento() {
     servicios: existing ? existing.servicios : [],
     timeline: existing ? existing.timeline : [],
     articulos: existing ? existing.articulos : [],
+    cobrado: existing ? existing.cobrado : false,
+    fechaCobro: existing ? existing.fechaCobro : null,
   };
   window._pendingClienteId = null;
   if(existingId) {
@@ -2093,6 +2099,44 @@ async function deleteEvento(id) {
   await dbDelete('eventos', id); renderEventos(); updateBadges(); updateCountdown();
 }
 
+function totalVentaEvento(ev) {
+  const arts_uso = (ev.articulos||[]).filter(a=>a.tipo==='uso');
+  const arts_inv = (ev.articulos||[]).filter(a=>a.tipo==='inventario');
+  const svcs = ev.servicios||[];
+  const artVenta = arts_uso.reduce((s,a)=>s+a.precio*(a.cant||1),0) + arts_inv.reduce((s,a)=>s+a.precioCliente*(a.cant||1),0);
+  const svcVenta = svcs.reduce((s,sv)=>s+(sv.precio||sv.valor||0),0);
+  return artVenta + svcVenta;
+}
+
+async function toggleCobrado() {
+  const ev = data.eventos.find(e => e.id === eventoActivoId);
+  if(!ev) return;
+  ev.cobrado = !ev.cobrado;
+  ev.fechaCobro = ev.cobrado ? new Date().toISOString().slice(0,10) : null;
+  renderDetCobradoBtn(ev);
+  try { await save('eventos', eventoActivoId); } catch(e) { console.error(e); }
+  renderFinanzas();
+}
+
+function renderDetCobradoBtn(ev) {
+  const btn = document.getElementById('det-cobrado-btn');
+  if(!btn) return;
+  const total = totalVentaEvento(ev);
+  if(ev.cobrado) {
+    btn.textContent = '✅ Cobrado · ' + fmt(total);
+    btn.className = 'btn btn-sm';
+    btn.style.background = 'var(--sage)';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+  } else {
+    btn.textContent = '💰 Marcar como cobrado';
+    btn.className = 'btn btn-ghost btn-sm';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.border = '';
+  }
+}
+
 function abrirDetalleEvento(id) {
   eventoActivoId = id;
   const ev = data.eventos.find(e => e.id === id);
@@ -2110,6 +2154,7 @@ function abrirDetalleEvento(id) {
     diasTag.textContent = dias > 0 ? `En ${dias} días` : dias === 0 ? 'Hoy 🎉' : 'Ya pasó';
     diasTag.className = 'tag ' + (dias <= 30 && dias >= 0 ? 'tag-rose' : dias > 30 ? 'tag-gold' : 'tag-gray');
   } else { diasTag.textContent = '—'; diasTag.className = 'tag tag-gray'; }
+  renderDetCobradoBtn(ev);
   // switch to checklist tab by default
   switchEventoTab('checklist', document.querySelector('.tab-btn'));
   // show/hide
@@ -2506,7 +2551,7 @@ async function saveArticulo() {
   document.getElementById('modal-articulo-title').textContent = '🛍 Nuevo artículo';
   document.getElementById('art-sugerencias').style.display = 'none';
   closeModal('modal-articulo');
-  renderArticulosUso(); renderArticulosInv();
+  renderArticulosUso(); renderArticulosInv(); renderDetCobradoBtn(ev);
   try { await save('eventos', eventoActivoId); } catch(e) { console.error(e); }
 }
 
@@ -2514,7 +2559,7 @@ async function deleteArticulo(aid) {
   const ev = data.eventos.find(e => e.id === eventoActivoId);
   if(!ev) return;
   ev.articulos = (ev.articulos||[]).filter(a => a.id !== aid);
-  renderArticulosUso(); renderArticulosInv();
+  renderArticulosUso(); renderArticulosInv(); renderDetCobradoBtn(ev);
   try { await save('eventos', eventoActivoId); } catch(e) { console.error(e); }
 }
 
@@ -3156,28 +3201,35 @@ async function convertirLead(id) {
 //  RENDERS COMPUESTOS
 // ═══════════════════════════════════════════════
 function renderFinanzas() {
-  const totalIngresos = data.clientes.reduce((s,c) => s + c.presupuesto, 0);
+  const eventosCobrados = data.eventos.filter(e => e.cobrado);
+  const eventosPorCobrar = data.eventos.filter(e => !e.cobrado);
+  const totalCobrado = eventosCobrados.reduce((s,e) => s + totalVentaEvento(e), 0);
+  const totalPorCobrar = eventosPorCobrar.reduce((s,e) => s + totalVentaEvento(e), 0);
   const totalGastos = data.gastos.reduce((s,g) => s + g.valor, 0);
   const totalInv = data.inventario.reduce((s,a) => s + a.costo, 0);
-  const balance = totalIngresos - totalGastos;
-  document.getElementById('fin-ingresos').textContent = fmt(totalIngresos);
+  const balance = totalCobrado - totalGastos;
+  document.getElementById('fin-cobrado').textContent = fmt(totalCobrado);
+  document.getElementById('fin-cobrado-sub').textContent = eventosCobrados.length + ' evento' + (eventosCobrados.length===1?'':'s') + ' pagado' + (eventosCobrados.length===1?'':'s');
+  document.getElementById('fin-por-cobrar').textContent = fmt(totalPorCobrar);
   document.getElementById('fin-gastos').textContent = fmt(totalGastos);
   document.getElementById('fin-inventario').textContent = fmt(totalInv);
   const el = document.getElementById('fin-balance');
-  el.textContent = fmt(balance);
-  el.className = 'stat-value ' + (balance >= 0 ? 'amt-pos' : 'amt-neg');
+  if(el) { el.textContent = fmt(balance); el.className = 'stat-value ' + (balance >= 0 ? 'amt-pos' : 'amt-neg'); }
   const balanceGral = balance - totalInv;
   const elG = document.getElementById('fin-balance-gral');
   if(elG) { elG.textContent = fmt(balanceGral); elG.className = 'stat-value ' + (balanceGral >= 0 ? 'amt-pos' : 'amt-neg'); }
 
-  // ingresos list
+  // ingresos list: eventos cobrados y pendientes
   const list = document.getElementById('fin-ingresos-list');
-  if(!data.clientes.length) {
+  if(!data.eventos.length) {
     list.innerHTML = `<div class="empty" style="padding:24px"><span class="empty-icon">💸</span><div class="empty-title">Sin ingresos</div></div>`;
   } else {
-    list.innerHTML = data.clientes.map(c =>
-      `<div class="fin-row"><span>${c.nombre} <span class="tag tag-gray">${c.tipoEvento||c.paquete||''}</span></span><span class="amt-pos">${fmt(c.presupuesto)}</span></div>`
-    ).join('') + `<div class="fin-total"><span>Total ingresos</span><span>${fmt(totalIngresos)}</span></div>`;
+    const rows = data.eventos.map(e => {
+      const total = totalVentaEvento(e);
+      const tag = e.cobrado ? '<span class="tag" style="background:var(--sage);color:#fff">Cobrado</span>' : '<span class="tag tag-gray">Por cobrar</span>';
+      return `<div class="fin-row"><span>${e.pareja} ${tag}</span><span class="${e.cobrado?'amt-pos':''}">${fmt(total)}</span></div>`;
+    }).join('');
+    list.innerHTML = rows + `<div class="fin-total"><span>Total cobrado</span><span>${fmt(totalCobrado)}</span></div>`;
   }
 
   renderGastos();
@@ -3987,7 +4039,7 @@ async function init() {
 function reRender(key) {
   const map = {
     clientes:   () => { renderClientes(); renderFinanzas(); renderDashboard(); updateBadges(); },
-    eventos:    () => { renderEventos(); updateBadges(); updateCountdown(); renderDashboard(); },
+    eventos:    () => { renderEventos(); updateBadges(); updateCountdown(); renderDashboard(); renderFinanzas(); },
     proveedores:() => { renderProveedores(); updateBadges(); },
     gastos:     () => { renderGastos(); renderFinanzas(); },
     inventario: () => { renderInventario(); updateBadges(); renderFinanzas(); },
