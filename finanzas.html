@@ -160,19 +160,21 @@ tr:last-child td{border-bottom:none;}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
-  getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot,
-  collection, addDoc, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  getDatabase, ref, onValue, set, update, remove, get, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
 /* =========================================================
-   CONFIGURACIÓN DE FIREBASE
+   CONFIGURACIÓN DE FIREBASE (Realtime Database)
    Reemplazá estos valores por los de tu proyecto:
    Firebase Console → ⚙ Configuración del proyecto → Tus apps → SDK setup
+   Importante: databaseURL es obligatorio (aparece en el config una vez
+   que ya creaste la Realtime Database).
    ========================================================= */
 const firebaseConfig = {
   apiKey: "PASTE_TU_API_KEY",
   authDomain: "PASTE_TU_AUTH_DOMAIN",
+  databaseURL: "PASTE_TU_DATABASE_URL",
   projectId: "PASTE_TU_PROJECT_ID",
   storageBucket: "PASTE_TU_STORAGE_BUCKET",
   messagingSenderId: "PASTE_TU_SENDER_ID",
@@ -251,8 +253,14 @@ function last6Months(monthKey){
 let app, db, auth;
 if(!NEEDS_SETUP){
   app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
+  db = getDatabase(app);
   auth = getAuth(app);
+}
+function spaceRef(path=''){
+  return ref(db, 'spaces/' + state.spaceId + (path ? '/' + path : ''));
+}
+function objToArray(obj){
+  return obj ? Object.entries(obj).map(([id,v])=>({id, ...v})) : [];
 }
 
 /* ---------------- State ---------------- */
@@ -264,7 +272,7 @@ const state = {
   transactions:[],
   goals:[],
   debts:[],
-  budgetDoc:{limits:{}},
+  budgetsAll:{},
   currentMonth: monthNow(),
   activeTab:'dashboard',
   justCreated:false,
@@ -303,13 +311,13 @@ function renderSetupScreen(){
       <p style="color:var(--text2);font-size:13.5px;">Esta app necesita las credenciales de tu proyecto de Firebase para poder sincronizar los datos entre dispositivos sin login.</p>
       <ol>
         <li>Entrá a <b>console.firebase.google.com</b> y creá un proyecto (o usá uno existente).</li>
-        <li>Activá <b>Firestore Database</b> (modo producción, cualquier región).</li>
+        <li>Activá <b>Realtime Database</b> (modo bloqueado/producción, cualquier región).</li>
         <li>Activá <b>Authentication → Sign-in method → Anónimo</b>.</li>
-        <li>En Configuración del proyecto → Tus apps, agregá una app web y copiá el objeto <code>firebaseConfig</code>.</li>
+        <li>En Configuración del proyecto → Tus apps, agregá una app web y copiá el objeto <code>firebaseConfig</code> (asegurate de que incluya <code>databaseURL</code>).</li>
         <li>Pegalo en <code>finanzas.html</code>, dentro de la constante <code>firebaseConfig</code> (buscá "PASTE_TU").</li>
-        <li>En Firestore → Reglas, pegá el contenido de <code>firestore.rules</code> (incluido en este repo) y publicá.</li>
+        <li>En Realtime Database → Reglas, pegá el contenido de <code>database.rules.json</code> (incluido en este repo) y publicá.</li>
       </ol>
-      <p style="font-size:12.5px;color:var(--text3);">Estos valores no son secretos: van embebidos en el HTML y la seguridad real la dan las reglas de Firestore, no el config.</p>
+      <p style="font-size:12.5px;color:var(--text3);">Estos valores no son secretos: van embebidos en el HTML y la seguridad real la dan las reglas de la base de datos, no el config.</p>
     </div>
   </div>
   </div>`;
@@ -381,18 +389,18 @@ async function onCreateSpace(e){
   const currency = fd.get('currency');
   const spaceId = uid();
   const memberId = uid(8);
-  const categories = [
-    ...DEFAULT_EXPENSE_CATEGORIES.map(c=>({id:uid(8), type:'expense', name:c.name, emoji:c.emoji})),
-    ...DEFAULT_INCOME_CATEGORIES.map(c=>({id:uid(8), type:'income', name:c.name, emoji:c.emoji})),
-  ];
-  const accounts = DEFAULT_ACCOUNTS.map(a=>({id:uid(8), name:a.name, icon:a.icon, initialBalance:0}));
-  const members = [{id:memberId, name:memberName, color:MEMBER_COLORS[0]}];
+  const categories = {};
+  DEFAULT_EXPENSE_CATEGORIES.forEach(c=>{ categories[uid(8)] = {type:'expense', name:c.name, emoji:c.emoji}; });
+  DEFAULT_INCOME_CATEGORIES.forEach(c=>{ categories[uid(8)] = {type:'income', name:c.name, emoji:c.emoji}; });
+  const accounts = {};
+  DEFAULT_ACCOUNTS.forEach(a=>{ accounts[uid(8)] = {name:a.name, icon:a.icon, initialBalance:0}; });
+  const members = { [memberId]: {name:memberName, color:MEMBER_COLORS[0]} };
   const spaceData = { name, currency, categories, accounts, members, createdAt: serverTimestamp() };
   const btn = e.target.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Creando...';
   try{
     if(!auth.currentUser) await signInAnonymously(auth);
-    await setDoc(doc(db,'spaces',spaceId), spaceData);
     state.spaceId = spaceId;
+    await set(spaceRef(), spaceData);
     state.justCreated = true;
     history.replaceState(null,'', location.pathname + '?space=' + spaceId);
     initSpaceSubscriptions();
@@ -450,37 +458,27 @@ async function initSpaceSubscriptions(){
   }
   state.authReady = true;
   clearSubs();
-  const spaceRef = doc(db,'spaces',state.spaceId);
-  unsubs.push(onSnapshot(spaceRef, snap=>{
+  unsubs.push(onValue(spaceRef(), snap=>{
     if(!snap.exists()){ state.notFound=true; state.space=null; render(); return; }
-    state.space = { id: snap.id, ...snap.data() };
+    const val = snap.val();
+    state.space = {
+      id: state.spaceId,
+      name: val.name,
+      currency: val.currency,
+      createdAt: val.createdAt,
+      members: objToArray(val.members),
+      categories: objToArray(val.categories),
+      accounts: objToArray(val.accounts),
+    };
+    state.transactions = objToArray(val.transactions).sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+    state.goals = objToArray(val.goals);
+    state.debts = objToArray(val.debts);
+    state.budgetsAll = val.budgets || {};
     render();
   }, err=>console.error(err)));
-
-  unsubs.push(onSnapshot(collection(db,'spaces',state.spaceId,'transactions'), snap=>{
-    state.transactions = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=> (b.date||'').localeCompare(a.date||''));
-    render();
-  }, err=>console.error(err)));
-
-  unsubs.push(onSnapshot(collection(db,'spaces',state.spaceId,'goals'), snap=>{
-    state.goals = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    render();
-  }, err=>console.error(err)));
-
-  unsubs.push(onSnapshot(collection(db,'spaces',state.spaceId,'debts'), snap=>{
-    state.debts = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    render();
-  }, err=>console.error(err)));
-
-  subscribeBudget(state.currentMonth);
 }
-let unsubBudget=null;
-function subscribeBudget(monthKey){
-  if(unsubBudget) unsubBudget();
-  unsubBudget = onSnapshot(doc(db,'spaces',state.spaceId,'budgets',monthKey), snap=>{
-    state.budgetDoc = snap.exists() ? snap.data() : {limits:{}};
-    render();
-  }, err=>console.error(err));
+function getBudgetLimits(monthKey){
+  return (state.budgetsAll[monthKey]||{}).limits || {};
 }
 
 /* ---------------- Derived data helpers ---------------- */
@@ -559,7 +557,7 @@ function renderDashboard(){
   const mt = monthTotals(state.currentMonth);
   const cats = (state.space.categories||[]).filter(c=>c.type==='expense');
   const overBudget = cats.map(c=>{
-    const limit = (state.budgetDoc.limits||{})[c.id];
+    const limit = getBudgetLimits(state.currentMonth)[c.id];
     if(!limit) return null;
     const spent = categorySpend(state.currentMonth, c.id);
     const pct = spent/limit;
@@ -665,7 +663,7 @@ function renderTxRow(t){
 /* ---------------- Budgets ---------------- */
 function renderBudgets(){
   const cats = (state.space.categories||[]).filter(c=>c.type==='expense');
-  const limits = state.budgetDoc.limits||{};
+  const limits = getBudgetLimits(state.currentMonth);
   return `
   <div class="card">
     <div class="section-title">Presupuestos <span class="hint">${monthLabel(state.currentMonth)}</span>
@@ -921,7 +919,6 @@ function bindShell(){
   const monthInput = document.getElementById('month-input');
   if(monthInput) monthInput.addEventListener('change', e=>{
     state.currentMonth = e.target.value;
-    subscribeBudget(state.currentMonth);
     render();
   });
   document.getElementById('modal-root').addEventListener('click', onModalClick);
@@ -945,20 +942,20 @@ function onShellClick(e){
     case 'copy-link': copyToClipboard(document.getElementById('share-url-input').value); break;
     case 'new-transaction': openModal(modalTransactionForm(null)); break;
     case 'edit-transaction': openModal(modalTransactionForm(state.transactions.find(t=>t.id===id))); break;
-    case 'delete-transaction': if(confirm('¿Eliminar este movimiento?')) deleteDoc(doc(db,'spaces',state.spaceId,'transactions',id)); break;
+    case 'delete-transaction': if(confirm('¿Eliminar este movimiento?')) remove(spaceRef('transactions/'+id)); break;
     case 'new-goal': openModal(modalGoalForm(null)); break;
     case 'contribute-goal': openModal(modalContributeGoal(state.goals.find(g=>g.id===id))); break;
-    case 'delete-goal': if(confirm('¿Eliminar esta meta?')) deleteDoc(doc(db,'spaces',state.spaceId,'goals',id)); break;
+    case 'delete-goal': if(confirm('¿Eliminar esta meta?')) remove(spaceRef('goals/'+id)); break;
     case 'new-debt': openModal(modalDebtForm(null)); break;
     case 'pay-debt': openModal(modalPayDebt(state.debts.find(d=>d.id===id))); break;
-    case 'delete-debt': if(confirm('¿Eliminar esta deuda?')) deleteDoc(doc(db,'spaces',state.spaceId,'debts',id)); break;
+    case 'delete-debt': if(confirm('¿Eliminar esta deuda?')) remove(spaceRef('debts/'+id)); break;
     case 'copy-prev-budget': copyPrevBudget(); break;
     case 'new-member': openModal(modalMemberForm()); break;
-    case 'remove-member': if(confirm('¿Quitar integrante?')) removeFromSpaceArray('members', id); break;
+    case 'remove-member': if(confirm('¿Quitar integrante?')) removeSpaceChild('members', id); break;
     case 'new-account': openModal(modalAccountForm()); break;
-    case 'remove-account': if(confirm('¿Eliminar cuenta?')) removeFromSpaceArray('accounts', id); break;
+    case 'remove-account': if(confirm('¿Eliminar cuenta?')) removeSpaceChild('accounts', id); break;
     case 'new-category': openModal(modalCategoryForm()); break;
-    case 'remove-category': if(confirm('¿Eliminar categoría?')) removeFromSpaceArray('categories', id); break;
+    case 'remove-category': if(confirm('¿Eliminar categoría?')) removeSpaceChild('categories', id); break;
     case 'delete-space': deleteSpace(); break;
   }
 }
@@ -995,12 +992,12 @@ async function onShellSubmit(e){
     for(const [k,v] of fd.entries()){
       if(k.startsWith('limit_') && v) limits[k.replace('limit_','')] = Number(v);
     }
-    await setDoc(doc(db,'spaces',state.spaceId,'budgets',state.currentMonth), {limits}, {merge:true});
+    await update(spaceRef('budgets/'+state.currentMonth), {limits});
   }
   if(e.target.dataset.form==='space-settings'){
     e.preventDefault();
     const fd = new FormData(e.target);
-    await updateDoc(doc(db,'spaces',state.spaceId), {name: fd.get('name'), currency: fd.get('currency')});
+    await update(spaceRef(), {name: fd.get('name'), currency: fd.get('currency')});
   }
 }
 async function onModalSubmit(e){
@@ -1023,45 +1020,43 @@ async function onModalSubmit(e){
         memberId: fd.get('memberId') || null,
         note: fd.get('note') || '',
       };
-      if(id) await updateDoc(doc(db,'spaces',state.spaceId,'transactions',id), data);
-      else await addDoc(collection(db,'spaces',state.spaceId,'transactions'), {...data, createdAt: serverTimestamp()});
+      if(id) await update(spaceRef('transactions/'+id), data);
+      else await set(spaceRef('transactions/'+uid(12)), {...data, createdAt: serverTimestamp()});
     }
     if(formType==='goal'){
       const id = form.dataset.id;
       const data = { name: fd.get('name'), targetAmount: Number(fd.get('targetAmount')), currentAmount: Number(fd.get('currentAmount')||0), deadline: fd.get('deadline')||null };
-      if(id) await updateDoc(doc(db,'spaces',state.spaceId,'goals',id), data);
-      else await addDoc(collection(db,'spaces',state.spaceId,'goals'), data);
+      if(id) await update(spaceRef('goals/'+id), data);
+      else await set(spaceRef('goals/'+uid(10)), data);
     }
     if(formType==='goal-contribute'){
       const id = form.dataset.id;
       const g = state.goals.find(x=>x.id===id);
-      await updateDoc(doc(db,'spaces',state.spaceId,'goals',id), { currentAmount: (g.currentAmount||0) + Number(fd.get('amount')) });
+      await update(spaceRef('goals/'+id), { currentAmount: (g.currentAmount||0) + Number(fd.get('amount')) });
     }
     if(formType==='debt'){
       const id = form.dataset.id;
       const data = { name: fd.get('name'), totalAmount: Number(fd.get('totalAmount')), remainingAmount: Number(fd.get('remainingAmount')||fd.get('totalAmount')), monthlyPayment: fd.get('monthlyPayment')?Number(fd.get('monthlyPayment')):null };
-      if(id) await updateDoc(doc(db,'spaces',state.spaceId,'debts',id), data);
-      else await addDoc(collection(db,'spaces',state.spaceId,'debts'), data);
+      if(id) await update(spaceRef('debts/'+id), data);
+      else await set(spaceRef('debts/'+uid(10)), data);
     }
     if(formType==='debt-pay'){
       const id = form.dataset.id;
       const d = state.debts.find(x=>x.id===id);
       const amount = Number(fd.get('amount'));
       const remaining = Math.max(0, (d.remainingAmount??d.totalAmount) - amount);
-      await updateDoc(doc(db,'spaces',state.spaceId,'debts',id), { remainingAmount: remaining });
+      await update(spaceRef('debts/'+id), { remainingAmount: remaining });
     }
     if(formType==='member'){
       const members = state.space.members||[];
       const color = MEMBER_COLORS[members.length % MEMBER_COLORS.length];
-      await updateDoc(doc(db,'spaces',state.spaceId), { members: [...members, {id:uid(8), name: fd.get('name'), color}] });
+      await set(spaceRef('members/'+uid(8)), { name: fd.get('name'), color });
     }
     if(formType==='account'){
-      const accounts = state.space.accounts||[];
-      await updateDoc(doc(db,'spaces',state.spaceId), { accounts: [...accounts, {id:uid(8), name: fd.get('name'), icon:'💳', initialBalance: Number(fd.get('initialBalance')||0)}] });
+      await set(spaceRef('accounts/'+uid(8)), { name: fd.get('name'), icon:'💳', initialBalance: Number(fd.get('initialBalance')||0) });
     }
     if(formType==='category'){
-      const categories = state.space.categories||[];
-      await updateDoc(doc(db,'spaces',state.spaceId), { categories: [...categories, {id:uid(8), type: fd.get('type'), name: fd.get('name'), emoji: fd.get('emoji')||'🏷️'}] });
+      await set(spaceRef('categories/'+uid(8)), { type: fd.get('type'), name: fd.get('name'), emoji: fd.get('emoji')||'🏷️' });
     }
     closeModal();
   }catch(err){
@@ -1071,17 +1066,16 @@ async function onModalSubmit(e){
 }
 async function copyPrevBudget(){
   const prev = addMonths(state.currentMonth,-1);
-  const snap = await getDoc(doc(db,'spaces',state.spaceId,'budgets',prev));
-  if(snap.exists()) await setDoc(doc(db,'spaces',state.spaceId,'budgets',state.currentMonth), snap.data(), {merge:true});
+  const snap = await get(spaceRef('budgets/'+prev));
+  if(snap.exists()) await update(spaceRef('budgets/'+state.currentMonth), { limits: snap.val().limits || {} });
 }
-async function removeFromSpaceArray(field, id){
-  const arr = (state.space[field]||[]).filter(x=>x.id!==id);
-  await updateDoc(doc(db,'spaces',state.spaceId), {[field]: arr});
+async function removeSpaceChild(field, id){
+  await remove(spaceRef(field+'/'+id));
 }
 async function deleteSpace(){
   if(!confirm('Esto borra el espacio para todos. ¿Estás seguro?')) return;
   if(!confirm('Última confirmación: esta acción no se puede deshacer.')) return;
-  await deleteDoc(doc(db,'spaces',state.spaceId));
+  await remove(spaceRef());
   state.spaceId=null; state.space=null; clearSubs();
   history.replaceState(null,'', location.pathname);
   render();

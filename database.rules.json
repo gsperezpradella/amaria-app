@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "spaces": {
+      "$spaceId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}
