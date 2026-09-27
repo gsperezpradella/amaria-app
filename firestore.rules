@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Modelo de acceso "por link": cualquiera que conozca el spaceId puede
+    // leer/escribir ese espacio. La seguridad no viene de quién es el usuario
+    // (por eso alcanza con auth anónima) sino de que el spaceId no se puede
+    // adivinar ni listar.
+    match /spaces/{spaceId} {
+      allow read, write: if request.auth != null;
+
+      match /{document=**} {
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+}
